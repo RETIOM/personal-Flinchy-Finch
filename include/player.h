@@ -23,7 +23,7 @@ private:
     sf::Sprite body;
     const float gravity = -825.0f;
     const float rotation = 200.0f;
-    const float multiplier = ; // Making movement frame independent
+    // const float multiplier = ; // Making movement frame independent?
 };
 
 #endif //PLAYER_H

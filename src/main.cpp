@@ -12,7 +12,7 @@ int main()
 
     auto window = sf::RenderWindow(sf::VideoMode({display_width, display_height}), "CMake SFML Project",
         sf::Style::Default, sf::State::Windowed);
-    window.setFramerateLimit(144);
+    window.setFramerateLimit(60);
 
     // TODO:
     // - modify player(make it store a window, move animation into it, make speed relative to window size)
