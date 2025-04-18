@@ -13,8 +13,15 @@ public:
     Pipe(sf::RenderWindow& window, sf::Texture& topTexture, sf::Texture& bottomTexture);
     ~Pipe() = default;
 
-    // sf::IntRect getRect();
-    bool isOutOfBounds() { return outOfBounds; };
+    bool isOutOfBounds() const { return outOfBounds; };
+    float getThickness() const { return topPipe.getGlobalBounds().size.x; }
+
+    // Methods for collision below
+
+
+    // Methods for AI below(topPosition getter, botPosition getter, x position getter)
+    float getXPosition() const { return topPipe.getPosition().x; }
+
 
     void update(float deltaTime, float velocity = 100.f);
     void draw() const;

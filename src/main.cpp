@@ -1,6 +1,7 @@
 #include <iostream>
 #include <random>
 #include <algorithm>
+#include <deque>
 #include <SFML/Graphics.hpp>
 
 #include "../include/animation.h"
@@ -56,8 +57,18 @@ int main()
     sf::Texture topPipeTexture("./assets/tube1.png");
     sf::Texture bottomPipeTexture("./assets/tube2.png");
 
-    Pipe pipe(window, topPipeTexture, bottomPipeTexture);
+    // Pipe pipe(window, topPipeTexture, bottomPipeTexture);
 
+    // **********************
+    // Working on Pipe Container
+    std::deque<Pipe> pipes;
+
+    pipes.emplace_back(Pipe(window, topPipeTexture, bottomPipeTexture));
+
+
+    int counter = 0;
+
+    // **********************
 
     float deltaTime = 0.0f;
     sf::Clock clock;
@@ -75,17 +86,24 @@ int main()
 
         bird.update(deltaTime);
         ground.update(deltaTime);
-        pipe.update(deltaTime);
 
         window.clear();
 
 
-
+        if (window.getSize().x - (pipes.back().getXPosition()+pipes.back().getThickness()) >= 200.f )
+            pipes.emplace_back(Pipe(window, topPipeTexture, bottomPipeTexture));
 
 
         window.draw(bg);
         bird.draw();
-        pipe.draw();
+
+        if (pipes.front().isOutOfBounds()) {pipes.pop_front();}
+        for (auto &piper : pipes) {
+            piper.update(deltaTime);
+            if (piper.isOutOfBounds()) {pipes.pop_front(); continue; }
+
+            piper.draw();
+        }
         ground.draw();
         window.display();
     }
