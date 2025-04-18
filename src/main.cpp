@@ -1,9 +1,26 @@
 #include <iostream>
+#include <random>
+#include <algorithm>
 #include <SFML/Graphics.hpp>
 
 #include "../include/animation.h"
 #include "../include/player.h"
 #include "../include/ground.h"
+#include "../include/pipe.h"
+
+int generate_clamped_normal_int() {
+    // Make all of these related to the window size
+    int mean = 175;
+    int stddev = 50;
+    int min = 50;
+    int max = 300;
+    static std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+    std::normal_distribution<double> dist(mean, stddev);
+
+    double value = dist(rng);
+    return std::clamp(static_cast<int>(std::floor(value)), min, max);
+}
+
 
 int main()
 {
@@ -12,11 +29,11 @@ int main()
 
     auto window = sf::RenderWindow(sf::VideoMode({display_width, display_height}), "CMake SFML Project",
         sf::Style::Default, sf::State::Windowed);
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(144);
 
     // TODO:
-    // - modify player(make it store a window, move animation into it, make speed relative to window size)
-    // - add pipes
+    // + modify player(make it store a window, move animation into it, make speed relative to window size)
+    // + add pipes
     // - add speed calculation function(that would be in game.h scorelogscore)
     // - add menu(main(Play(also space), difficulty, mode, exit), restart(play, main menu, score(last, best))
     // - add score (:))
@@ -25,6 +42,7 @@ int main()
     sf::Texture groundTexture("./assets/ground.png");
     Ground ground(window, groundTexture);
 
+
     sf::RectangleShape bg(sf::Vector2f(display_width,display_height-112.0f));
     const sf::Texture bgTexture("./assets/bg.png");
     bg.setTexture(&bgTexture);
@@ -32,12 +50,18 @@ int main()
 
 
     sf::Texture birdTexture("./assets/bird.png");
-    Player bird(&birdTexture, sf::Vector2u(3,1), 0.15f);
+    Player bird(window, birdTexture, sf::Vector2u(3,1), 0.1f);
 
+
+    sf::Texture topPipeTexture("./assets/tube1.png");
+    sf::Texture bottomPipeTexture("./assets/tube2.png");
+
+    Pipe pipe(window, topPipeTexture, bottomPipeTexture);
 
 
     float deltaTime = 0.0f;
     sf::Clock clock;
+
 
     while (window.isOpen()) {
         while (const std::optional event = window.pollEvent()) {
@@ -48,17 +72,21 @@ int main()
 
         deltaTime = clock.restart().asSeconds();
 
-        std::cout<<deltaTime<<std::endl;
 
         bird.update(deltaTime);
         ground.update(deltaTime);
+        pipe.update(deltaTime);
 
         window.clear();
 
+
+
+
+
         window.draw(bg);
-        bird.draw(window);
+        bird.draw();
+        pipe.draw();
         ground.draw();
-        // window.draw(ground);
         window.display();
     }
 }

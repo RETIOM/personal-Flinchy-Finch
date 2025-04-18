@@ -18,7 +18,6 @@ private:
     sf::RenderWindow& _window;
     sf::Sprite _ground1;
     sf::Sprite _ground2;
-    // const float multiplier = ;
 };
 
 #endif //GROUND_H

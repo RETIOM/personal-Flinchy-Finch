@@ -9,10 +9,10 @@
 
 class Animation {
 public:
-    Animation(sf::Texture* texture, sf::Vector2u imageCount, float switchTime);
+    Animation(sf::Texture& texture, sf::Vector2u imageCount, float switchTime);
     ~Animation() = default;
 
-    void update(float deltaTime, bool isFalling);
+    void update(float deltaTime, bool isFalling, bool jumped);
 
 public:
     sf::IntRect _uvRect;

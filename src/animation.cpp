@@ -4,25 +4,25 @@
 
 #include "../include/animation.h"
 
-Animation::Animation(sf::Texture *texture, sf::Vector2u imageCount, float switchTime) {
+Animation::Animation(sf::Texture &texture, sf::Vector2u imageCount, float switchTime) {
     _switchTime = switchTime;
     _imageCount = imageCount;
     _totalTime = 0.0f;
     _currentImage.x = 0;
     _currentImage.y = 0;
 
-    _uvRect.size.x = texture->getSize().x / imageCount.x;
-    _uvRect.size.y = texture->getSize().y / imageCount.y;
+    _uvRect.size.x = texture.getSize().x / imageCount.x;
+    _uvRect.size.y = texture.getSize().y / imageCount.y;
 }
 
-void Animation::update(const float deltaTime, bool isFalling) {
+void Animation::update(const float deltaTime, bool isFalling, bool jumped) {
     _totalTime += deltaTime;
     if (!isFalling) {
         if (_totalTime >= _switchTime) {
             _totalTime -= _switchTime;
             _currentImage.x++;
 
-            if (_currentImage.x >= _imageCount.x) {
+            if (_currentImage.x >= _imageCount.x || jumped) {
                 _currentImage.x = 0;
             }
         }

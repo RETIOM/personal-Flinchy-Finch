@@ -3,3 +3,62 @@
 //
 
 #include "../include/pipe.h"
+
+#include <random>
+#include <algorithm>
+#include <iostream>
+
+Pipe::Pipe(sf::RenderWindow &window, sf::Texture &topTexture, sf::Texture &bottomTexture) : _window(window), topPipe(topTexture), bottomPipe(bottomTexture) {
+    const auto scale = (window.getSize().y - 112.f) / topPipe.getLocalBounds().size.y;
+
+    topPipe.setOrigin(sf::Vector2f(0, topPipe.getGlobalBounds().size.y));
+    bottomPipe.setOrigin(sf::Vector2f(0, 0));
+
+    topPipe.setScale(sf::Vector2f(scale, scale));
+    bottomPipe.setScale(sf::Vector2f(scale, scale));
+
+    pipeDistance = 25*(_window.getSize().y - 112.f) / 100;
+
+    const int pipePosition = generatePipePosition();
+
+    topPipe.setPosition(sf::Vector2f(_window.getSize().x, pipePosition));
+    bottomPipe.setPosition(sf::Vector2f(_window.getSize().x, pipePosition+pipeDistance));
+}
+
+
+int Pipe::generatePipePosition() {
+    const int min = 50;
+    const int max = _window.getSize().y - 112.f - pipeDistance - 50;
+
+    const auto mean = (min+max) / 2;
+
+    const int stddev = _window.getSize().y / 2;
+
+    static std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+    std::normal_distribution<double> dist(mean, stddev);
+
+    const double value = dist(rng);
+    return std::clamp(static_cast<int>(std::floor(value)), min, max);
+}
+
+void Pipe::update(float deltaTime, float velocity) {
+    sf::Vector2f movement(0.0f, 0.0f);
+
+    movement.x -= velocity * deltaTime;
+
+    topPipe.move(movement);
+    bottomPipe.move(movement);
+
+    if (topPipe.getPosition().x + topPipe.getGlobalBounds().size.x <= 0) {outOfBounds = true;};
+}
+
+
+void Pipe::draw() const {
+    _window.draw(topPipe);
+    _window.draw(bottomPipe);
+}
+
+
+
+
+
