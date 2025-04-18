@@ -23,6 +23,8 @@ add_executable(main src/main.cpp
         src/animation.cpp
         include/animation.h
         src/ground.cpp
-        include/ground.h)
+        include/ground.h
+        include/pipe_controller.h
+        src/pipe_controller.cpp)
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)

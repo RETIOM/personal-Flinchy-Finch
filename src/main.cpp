@@ -8,6 +8,7 @@
 #include "../include/player.h"
 #include "../include/ground.h"
 #include "../include/pipe.h"
+#include "../include/pipe_controller.h"
 
 int generate_clamped_normal_int() {
     // Make all of these related to the window size
@@ -30,14 +31,13 @@ int main()
 
     auto window = sf::RenderWindow(sf::VideoMode({display_width, display_height}), "CMake SFML Project",
         sf::Style::Default, sf::State::Windowed);
-    window.setFramerateLimit(144);
+    // window.setFramerateLimit(144);
 
     // TODO:
-    // + modify player(make it store a window, move animation into it, make speed relative to window size)
-    // + add pipes
+    // - add collision
+    // - add scoring
     // - add speed calculation function(that would be in game.h scorelogscore)
     // - add menu(main(Play(also space), difficulty, mode, exit), restart(play, main menu, score(last, best))
-    // - add score (:))
 
 
     sf::Texture groundTexture("./assets/ground.png");
@@ -57,18 +57,9 @@ int main()
     sf::Texture topPipeTexture("./assets/tube1.png");
     sf::Texture bottomPipeTexture("./assets/tube2.png");
 
-    // Pipe pipe(window, topPipeTexture, bottomPipeTexture);
 
-    // **********************
-    // Working on Pipe Container
-    std::deque<Pipe> pipes;
+    PipeController pipes(window, topPipeTexture, bottomPipeTexture);
 
-    pipes.emplace_back(Pipe(window, topPipeTexture, bottomPipeTexture));
-
-
-    int counter = 0;
-
-    // **********************
 
     float deltaTime = 0.0f;
     sf::Clock clock;
@@ -90,20 +81,9 @@ int main()
         window.clear();
 
 
-        if (window.getSize().x - (pipes.back().getXPosition()+pipes.back().getThickness()) >= 200.f )
-            pipes.emplace_back(Pipe(window, topPipeTexture, bottomPipeTexture));
-
-
         window.draw(bg);
         bird.draw();
-
-        if (pipes.front().isOutOfBounds()) {pipes.pop_front();}
-        for (auto &piper : pipes) {
-            piper.update(deltaTime);
-            if (piper.isOutOfBounds()) {pipes.pop_front(); continue; }
-
-            piper.draw();
-        }
+        pipes.update(deltaTime);
         ground.draw();
         window.display();
     }

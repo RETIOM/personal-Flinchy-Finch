@@ -14,13 +14,17 @@ public:
     ~Pipe() = default;
 
     bool isOutOfBounds() const { return outOfBounds; };
-    float getThickness() const { return topPipe.getGlobalBounds().size.x; }
+    // float getThickness() const { return topPipe.getGlobalBounds().size.x; }
+
+    // Methods for scoring below
+    float getBackPosition() const {return topPipe.getGlobalBounds().size.x + topPipe.getPosition().x;}
+
 
     // Methods for collision below
 
 
     // Methods for AI below(topPosition getter, botPosition getter, x position getter)
-    float getXPosition() const { return topPipe.getPosition().x; }
+    float getPosition() const { return topPipe.getPosition().x; }
 
 
     void update(float deltaTime, float velocity = 100.f);
