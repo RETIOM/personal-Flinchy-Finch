@@ -3,6 +3,8 @@
 //
 #include "../include/pipe_controller.h"
 
+#include <iostream>
+
 
 PipeController::PipeController(sf::RenderWindow &window, sf::Texture &topPipeTexture, sf::Texture &bottomPipeTexture) : _window(window), _topPipeTexture(topPipeTexture), _bottomPipeTexture(bottomPipeTexture) {
     pipes.emplace_back(Pipe(_window, _topPipeTexture, _bottomPipeTexture));
@@ -20,5 +22,14 @@ void PipeController::update(float deltaTime, float velocity) {
         pipe.update(deltaTime, velocity);
         pipe.draw();
     }
+}
+
+Pipe& PipeController::nextPipe() {
+    for (auto &pipe : pipes) {
+        if (!pipe.isPassedPlayer()) {
+            return pipe;
+        }
+    }
+    return pipes.front();
 }
 

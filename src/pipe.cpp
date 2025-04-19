@@ -27,12 +27,11 @@ Pipe::Pipe(sf::RenderWindow &window, sf::Texture &topTexture, sf::Texture &botto
 
 
 int Pipe::generatePipePosition() {
-    const int min = 50;
-    const int max = _window.getSize().y - 112.f - pipeDistance - 50;
-
+    const int min = 50 * _window.getSize().y / 600u; // Scale with resolution
+    const int max = _window.getSize().y - 112.f - pipeDistance - min;
     const auto mean = (min+max) / 2;
 
-    const int stddev = _window.getSize().y / 2;
+    const int stddev = _window.getSize().y / 3;
 
     static std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
     std::normal_distribution<double> dist(mean, stddev);
@@ -49,7 +48,8 @@ void Pipe::update(float deltaTime, float velocity) {
     topPipe.move(movement);
     bottomPipe.move(movement);
 
-    if (topPipe.getPosition().x + topPipe.getGlobalBounds().size.x <= 0) {outOfBounds = true;};
+    if (this->getBackPosition() <= 0) {outOfBounds = true;};
+    if (this->getBackPosition() <= _window.getSize().x / 3) {passedPlayer = true;};
 }
 
 

@@ -6,17 +6,20 @@
 #define PLAYER_H
 
 #include <SFML/Graphics.hpp>
+#include <algorithm>
 #include "animation.h"
+#include "pipe_controller.h"
 
 
 class Player {
 public:
-    Player(sf::RenderWindow& window, sf::Texture& texture, sf::Vector2u imageCount, float switchTime);
+    Player(PipeController& pipes, sf::RenderWindow& window, sf::Texture& texture, sf::Vector2u imageCount, float switchTime);
     ~Player() = default;
     void update(float deltaTime);
     void draw() const;
+    bool Alive() const {return isAlive;};
 private:
-    bool hasCollided();
+    void checkCollision();
 
 private:
     sf::RenderWindow& _window;
@@ -24,6 +27,9 @@ private:
     float ySpeed;
     Animation animation;
     sf::Sprite body;
+    PipeController& _pipes;
+    sf::Vector2f size;
+
     float gravity = -1500.0f;
     float jumpSpeed = -400.f;
     float rotation = 200.0f;
@@ -32,6 +38,8 @@ private:
     bool wasSpacePressed = false;
 
     bool isAlive = true;
+
+
 };
 
 #endif //PLAYER_H

@@ -21,7 +21,9 @@ public:
 
 
     // Methods for collision below
-
+    bool isPassedPlayer() const { return passedPlayer; };
+    sf::FloatRect topPipeBody() { return topPipe.getGlobalBounds(); };
+    sf::FloatRect bottomPipeBody() { return bottomPipe.getGlobalBounds(); };
 
     // Methods for AI below(topPosition getter, botPosition getter, x position getter)
     float getPosition() const { return topPipe.getPosition().x; }
@@ -34,12 +36,11 @@ private:
 
     int pipeDistance;
     bool outOfBounds = false;
+    bool passedPlayer = false;
 
     sf::RenderWindow& _window;
     sf::Sprite topPipe;
     sf::Sprite bottomPipe;
-
-
 
 };
 

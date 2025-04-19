@@ -34,7 +34,8 @@ int main()
     // window.setFramerateLimit(144);
 
     // TODO:
-    // - add collision
+    // + scale bird with resolution
+    // + add collision
     // - add scoring
     // - add speed calculation function(that would be in game.h scorelogscore)
     // - add menu(main(Play(also space), difficulty, mode, exit), restart(play, main menu, score(last, best))
@@ -50,15 +51,14 @@ int main()
     bg.setPosition(sf::Vector2f(0,0));
 
 
-    sf::Texture birdTexture("./assets/bird.png");
-    Player bird(window, birdTexture, sf::Vector2u(3,1), 0.1f);
-
-
     sf::Texture topPipeTexture("./assets/tube1.png");
     sf::Texture bottomPipeTexture("./assets/tube2.png");
 
 
     PipeController pipes(window, topPipeTexture, bottomPipeTexture);
+
+    sf::Texture birdTexture("./assets/bird.png");
+    Player bird(pipes, window, birdTexture, sf::Vector2u(3,1), 0.1f);
 
 
     float deltaTime = 0.0f;
@@ -75,16 +75,19 @@ int main()
         deltaTime = clock.restart().asSeconds();
 
 
-        bird.update(deltaTime);
-        ground.update(deltaTime);
+        if (bird.Alive()) {
+            bird.update(deltaTime);
 
-        window.clear();
+            ground.update(deltaTime);
+
+            window.clear();
 
 
-        window.draw(bg);
-        bird.draw();
-        pipes.update(deltaTime);
-        ground.draw();
-        window.display();
+            window.draw(bg);
+            bird.draw();
+            pipes.update(deltaTime);
+            ground.draw();
+            window.display();
+        }
     }
 }

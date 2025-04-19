@@ -14,6 +14,9 @@ public:
     PipeController(sf::RenderWindow &window, sf::Texture &topPipeTexture, sf::Texture &bottomPipeTexture);
     ~PipeController() = default;
     void update(float deltaTime, float velocity = 100.f);
+
+    // Methods for collision
+    Pipe& nextPipe();
 private:
     std::deque<Pipe> pipes;
     float pipeHorizontalDistance;
