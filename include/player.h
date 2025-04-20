@@ -33,7 +33,6 @@ private:
     float gravity = -1500.0f;
     float jumpSpeed = -400.f;
     float rotation = 200.0f;
-    int score = 0;
 
     bool wasSpacePressed = false;
 

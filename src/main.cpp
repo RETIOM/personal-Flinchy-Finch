@@ -36,7 +36,8 @@ int main()
     // TODO:
     // + scale bird with resolution
     // + add collision
-    // - add scoring
+    // + add scoring
+    // - create game class
     // - add speed calculation function(that would be in game.h scorelogscore)
     // - add menu(main(Play(also space), difficulty, mode, exit), restart(play, main menu, score(last, best))
 
@@ -54,12 +55,23 @@ int main()
     sf::Texture topPipeTexture("./assets/tube1.png");
     sf::Texture bottomPipeTexture("./assets/tube2.png");
 
-
-    PipeController pipes(window, topPipeTexture, bottomPipeTexture);
+    int score = 0;
+    PipeController pipes(window, topPipeTexture, bottomPipeTexture, score);
 
     sf::Texture birdTexture("./assets/bird.png");
     Player bird(pipes, window, birdTexture, sf::Vector2u(3,1), 0.1f);
 
+
+
+
+    sf::Font font("./assets/PressStart2P-Regular.ttf");
+    sf::Text text(font);
+
+    text.setCharacterSize(window.getSize().y / 10);
+    text.setOrigin(sf::Vector2f(text.getLocalBounds().size.x/2, text.getLocalBounds().size.y/2));
+    text.setOutlineColor(sf::Color::Black);
+    text.setOutlineThickness(text.getCharacterSize() / 10);
+    text.setPosition(sf::Vector2f(display_width / 2,text.getLocalBounds().size.y/2+display_height / 10));
 
     float deltaTime = 0.0f;
     sf::Clock clock;
@@ -81,12 +93,13 @@ int main()
             ground.update(deltaTime);
 
             window.clear();
-
+            text.setString(std::to_string(score));
 
             window.draw(bg);
             bird.draw();
             pipes.update(deltaTime);
             ground.draw();
+            window.draw(text);
             window.display();
         }
     }

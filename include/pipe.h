@@ -10,7 +10,7 @@
 
 class Pipe {
 public:
-    Pipe(sf::RenderWindow& window, sf::Texture& topTexture, sf::Texture& bottomTexture);
+    Pipe(sf::RenderWindow& window, sf::Texture& topTexture, sf::Texture& bottomTexture, int &score);
     ~Pipe() = default;
 
     bool isOutOfBounds() const { return outOfBounds; };
@@ -41,6 +41,8 @@ private:
     sf::RenderWindow& _window;
     sf::Sprite topPipe;
     sf::Sprite bottomPipe;
+
+    int& _score;
 
 };
 

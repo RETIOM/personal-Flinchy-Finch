@@ -17,8 +17,6 @@ Player::Player(PipeController &pipes, sf::RenderWindow &window, sf::Texture &tex
     unsigned int horizontalSize = window.getSize().x;
     unsigned int verticalSize = window.getSize().y;
 
-    body.setPosition(sf::Vector2f(horizontalSize / 3, verticalSize / 2));
-
 
     // Set origin to bird center to make sure rotation and scale works good
     body.setOrigin(sf::Vector2f(texture.getSize().x / 6, texture.getSize().y / 2));
@@ -28,6 +26,7 @@ Player::Player(PipeController &pipes, sf::RenderWindow &window, sf::Texture &tex
 
     size = sf::Vector2f((texture.getSize().x / 3) * scale, texture.getSize().y * scale);
 
+    body.setPosition(sf::Vector2f(horizontalSize / 3 + 1.01*size.x / 2, verticalSize / 2));
 
     gravity *= verticalSize / 600;
     jumpSpeed *= verticalSize / 600;

@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <iostream>
 
-Pipe::Pipe(sf::RenderWindow &window, sf::Texture &topTexture, sf::Texture &bottomTexture) : _window(window), topPipe(topTexture), bottomPipe(bottomTexture) {
+Pipe::Pipe(sf::RenderWindow &window, sf::Texture &topTexture, sf::Texture &bottomTexture, int &score) : _window(window), topPipe(topTexture), bottomPipe(bottomTexture), _score(score) {
     const auto scale = (window.getSize().y - 112.f) / topPipe.getLocalBounds().size.y;
 
     topPipe.setOrigin(sf::Vector2f(0, topPipe.getGlobalBounds().size.y));
@@ -48,8 +48,8 @@ void Pipe::update(float deltaTime, float velocity) {
     topPipe.move(movement);
     bottomPipe.move(movement);
 
-    if (this->getBackPosition() <= 0) {outOfBounds = true;};
-    if (this->getBackPosition() <= _window.getSize().x / 3) {passedPlayer = true;};
+    if (passedPlayer && this->getBackPosition() <= 0) {outOfBounds = true;};
+    if (!passedPlayer && this->getBackPosition() <= _window.getSize().x / 3) {passedPlayer = true; _score++;};
 }
 
 

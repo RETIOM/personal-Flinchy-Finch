@@ -11,7 +11,7 @@
 
 class PipeController {
 public:
-    PipeController(sf::RenderWindow &window, sf::Texture &topPipeTexture, sf::Texture &bottomPipeTexture);
+    PipeController(sf::RenderWindow &window, sf::Texture &topPipeTexture, sf::Texture &bottomPipeTexture, int& score);
     ~PipeController() = default;
     void update(float deltaTime, float velocity = 100.f);
 
@@ -23,6 +23,7 @@ private:
     sf::Texture& _topPipeTexture;
     sf::Texture& _bottomPipeTexture;
     sf::RenderWindow& _window;
+    int& _score;
 };
 
 #endif //PIPE_CONTROLLER_H
