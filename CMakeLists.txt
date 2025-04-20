@@ -24,7 +24,11 @@ add_executable(main src/main.cpp
         include/animation.h
         src/ground.cpp
         include/ground.h
-        include/pipe_controller.h
-        src/pipe_controller.cpp)
+        include/pipe_manager.h
+        src/pipe_manager.cpp
+        include/player_manager.h
+        src/player_manager.cpp
+        include/difficulty.h
+        include/mode.h)
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)

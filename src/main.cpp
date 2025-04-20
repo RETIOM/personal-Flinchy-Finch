@@ -8,7 +8,8 @@
 #include "../include/player.h"
 #include "../include/ground.h"
 #include "../include/pipe.h"
-#include "../include/pipe_controller.h"
+#include "../include/pipe_manager.h"
+#include "../include/player_manager.h"
 
 int generate_clamped_normal_int() {
     // Make all of these related to the window size
@@ -37,6 +38,7 @@ int main()
     // + scale bird with resolution
     // + add collision
     // + add scoring
+    // + create player manager
     // - create game class
     // - add speed calculation function(that would be in game.h scorelogscore)
     // - add menu(main(Play(also space), difficulty, mode, exit), restart(play, main menu, score(last, best))
@@ -56,11 +58,11 @@ int main()
     sf::Texture bottomPipeTexture("./assets/tube2.png");
 
     int score = 0;
-    PipeController pipes(window, topPipeTexture, bottomPipeTexture, score);
+    PipeManager pipes(window, topPipeTexture, bottomPipeTexture, score);
 
     sf::Texture birdTexture("./assets/bird.png");
-    Player bird(pipes, window, birdTexture, sf::Vector2u(3,1), 0.1f);
-
+    // Player bird(pipes, window, birdTexture);
+    playerManager players(pipes, window, birdTexture, 1);
 
 
 
@@ -87,20 +89,34 @@ int main()
         deltaTime = clock.restart().asSeconds();
 
 
-        if (bird.Alive()) {
-            bird.update(deltaTime);
-
-            ground.update(deltaTime);
-
+        if (players.getAlive() > 0) {
             window.clear();
             text.setString(std::to_string(score));
-
             window.draw(bg);
-            bird.draw();
+            players.update(deltaTime);
             pipes.update(deltaTime);
-            ground.draw();
             window.draw(text);
+            ground.update(deltaTime);
+            ground.draw();
             window.display();
         }
+
+
+
+        // if (play) {
+        //     bird.update(deltaTime);
+        //
+        //     ground.update(deltaTime);
+        //
+        //     window.clear();
+        //     text.setString(std::to_string(score));
+        //
+        //     window.draw(bg);
+        //     bird.draw();
+        //     pipes.update(deltaTime);
+        //     ground.draw();
+        //     window.draw(text);
+        //     window.display();
+        // }
     }
 }

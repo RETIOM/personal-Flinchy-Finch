@@ -7,8 +7,7 @@
 
 #include <iostream>
 
-Player::Player(PipeController &pipes, sf::RenderWindow &window, sf::Texture &texture, sf::Vector2u imageCount, float switchTime) : animation(texture, imageCount,
-                                                                                                                                             switchTime), body(texture), _window(window), _pipes(pipes) {
+Player::Player(PipeManager &pipes, sf::RenderWindow &window, sf::Texture &texture) : animation(texture, sf::Vector2u(3,1), 0.1f), body(texture), _window(window), _pipes(pipes) {
     angle = sf::degrees(0);
     ySpeed = 0;
 

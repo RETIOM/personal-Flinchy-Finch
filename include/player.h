@@ -8,16 +8,16 @@
 #include <SFML/Graphics.hpp>
 #include <algorithm>
 #include "animation.h"
-#include "pipe_controller.h"
+#include "pipe_manager.h"
 
 
 class Player {
 public:
-    Player(PipeController& pipes, sf::RenderWindow& window, sf::Texture& texture, sf::Vector2u imageCount, float switchTime);
+    Player(PipeManager& pipes, sf::RenderWindow& window, sf::Texture& texture);
     ~Player() = default;
     void update(float deltaTime);
     void draw() const;
-    bool Alive() const {return isAlive;};
+    bool alive() const {return isAlive;};
 private:
     void checkCollision();
 
@@ -27,7 +27,7 @@ private:
     float ySpeed;
     Animation animation;
     sf::Sprite body;
-    PipeController& _pipes;
+    PipeManager& _pipes;
     sf::Vector2f size;
 
     float gravity = -1500.0f;
