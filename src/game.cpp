@@ -24,9 +24,6 @@ font("./assets/PressStart2P-Regular.ttf"), scoreText(font) {
     scoreText.setOutlineColor(sf::Color::Black);
     scoreText.setOutlineThickness(scoreText.getCharacterSize() / 10);
     updateScore();
-    // scoreText.setString(std::to_string(score));
-    // scoreText.setOrigin(sf::Vector2f(scoreText.getLocalBounds().size.x/2, scoreText.getLocalBounds().size.y/2));
-    // scoreText.setPosition(sf::Vector2f(_window.getSize().x / 2,scoreText.getLocalBounds().size.y/2 + _window.getSize().y / 10));
 
     // Handle options
     switch (difficulty) {

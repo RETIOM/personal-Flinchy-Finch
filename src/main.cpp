@@ -13,7 +13,7 @@ int main()
     auto display_width = 800u;
     auto display_height = 600u;
 
-    auto window = sf::RenderWindow(sf::VideoMode({display_width, display_height}), "Flincy Finch(TM)",
+    auto window = sf::RenderWindow(sf::VideoMode({display_width, display_height}), "Flinchy Finch(TM)",
         sf::Style::Default, sf::State::Windowed);
     // window.setFramerateLimit(144);
 
@@ -29,13 +29,12 @@ int main()
     // - add menu(main(Play(also space), difficulty, mode, exit), restart(play, main menu, score(last, best))
 
 
-
+    // Set manually
     auto difficulty = Difficulty::EASY;
     auto mode = Mode::MANUAL;
 
     Game game(difficulty, mode, window);
 
-    // FOR NOW SET MANUALLY TO READY(game object created)
     GameState state;
     mode == Mode::MANUAL ? state=GameState::READY : state=GameState::RUNNING;
 
@@ -49,7 +48,7 @@ int main()
                 window.close();
             }
             if (const auto* keyPress = event->getIf<sf::Event::KeyPressed>()) {
-                    if (mode == Mode::MANUAL && state == GameState::READY && keyPress->scancode == sf::Keyboard::Scan::Space) {
+                    if (state == GameState::READY && keyPress->scancode == sf::Keyboard::Scan::Space) {
                         game.reset();
                         window.clear();
                         game.draw();
