@@ -20,9 +20,15 @@ void PipeManager::update(float deltaTime, float velocity) {
 
     for (auto &pipe : pipes) {
         pipe.update(deltaTime, velocity);
+    }
+}
+
+void PipeManager::draw() {
+    for (auto &pipe : pipes) {
         pipe.draw();
     }
 }
+
 
 Pipe& PipeManager::nextPipe() {
     for (auto &pipe : pipes) {
@@ -33,3 +39,7 @@ Pipe& PipeManager::nextPipe() {
     return pipes.front();
 }
 
+void PipeManager::reset() {
+    pipes.clear();
+    pipes.emplace_back(_window, _topPipeTexture, _bottomPipeTexture, _score);
+}

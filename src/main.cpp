@@ -10,19 +10,10 @@
 #include "../include/pipe.h"
 #include "../include/pipe_manager.h"
 #include "../include/player_manager.h"
+#include "../include/game.h"
+#include "../include/difficulty.h"
+#include "../include/mode.h"
 
-int generate_clamped_normal_int() {
-    // Make all of these related to the window size
-    int mean = 175;
-    int stddev = 50;
-    int min = 50;
-    int max = 300;
-    static std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
-    std::normal_distribution<double> dist(mean, stddev);
-
-    double value = dist(rng);
-    return std::clamp(static_cast<int>(std::floor(value)), min, max);
-}
 
 
 int main()
@@ -39,41 +30,18 @@ int main()
     // + add collision
     // + add scoring
     // + create player manager
-    // - create game class
-    // - add speed calculation function(that would be in game.h scorelogscore)
+    // + create game class
+    // + add speed calculation function(that would be in game.h)
+    // - add and handle game states(startup, ready, running, paused)
+    // - create class Agents and its components(neuron, synapse, network)
     // - add menu(main(Play(also space), difficulty, mode, exit), restart(play, main menu, score(last, best))
 
 
-    sf::Texture groundTexture("./assets/ground.png");
-    Ground ground(window, groundTexture);
 
+    auto difficulty = Difficulty::HARD;
+    auto mode = Mode::MANUAL;
 
-    sf::RectangleShape bg(sf::Vector2f(display_width,display_height-112.0f));
-    const sf::Texture bgTexture("./assets/bg.png");
-    bg.setTexture(&bgTexture);
-    bg.setPosition(sf::Vector2f(0,0));
-
-
-    sf::Texture topPipeTexture("./assets/tube1.png");
-    sf::Texture bottomPipeTexture("./assets/tube2.png");
-
-    int score = 0;
-    PipeManager pipes(window, topPipeTexture, bottomPipeTexture, score);
-
-    sf::Texture birdTexture("./assets/bird.png");
-    // Player bird(pipes, window, birdTexture);
-    playerManager players(pipes, window, birdTexture, 1);
-
-
-
-    sf::Font font("./assets/PressStart2P-Regular.ttf");
-    sf::Text text(font);
-
-    text.setCharacterSize(window.getSize().y / 10);
-    text.setOrigin(sf::Vector2f(text.getLocalBounds().size.x/2, text.getLocalBounds().size.y/2));
-    text.setOutlineColor(sf::Color::Black);
-    text.setOutlineThickness(text.getCharacterSize() / 10);
-    text.setPosition(sf::Vector2f(display_width / 2,text.getLocalBounds().size.y/2+display_height / 10));
+    Game game(difficulty, mode, window);
 
     float deltaTime = 0.0f;
     sf::Clock clock;
@@ -88,35 +56,11 @@ int main()
 
         deltaTime = clock.restart().asSeconds();
 
-
-        if (players.getAlive() > 0) {
+        if (!game.getIsDone()) {
             window.clear();
-            text.setString(std::to_string(score));
-            window.draw(bg);
-            players.update(deltaTime);
-            pipes.update(deltaTime);
-            window.draw(text);
-            ground.update(deltaTime);
-            ground.draw();
+            game.update(deltaTime);
+            game.draw();
             window.display();
         }
-
-
-
-        // if (play) {
-        //     bird.update(deltaTime);
-        //
-        //     ground.update(deltaTime);
-        //
-        //     window.clear();
-        //     text.setString(std::to_string(score));
-        //
-        //     window.draw(bg);
-        //     bird.draw();
-        //     pipes.update(deltaTime);
-        //     ground.draw();
-        //     window.draw(text);
-        //     window.display();
-        // }
     }
 }

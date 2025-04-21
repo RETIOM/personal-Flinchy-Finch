@@ -14,6 +14,8 @@ public:
     PipeManager(sf::RenderWindow &window, sf::Texture &topPipeTexture, sf::Texture &bottomPipeTexture, int& score);
     ~PipeManager() = default;
     void update(float deltaTime, float velocity = 100.f);
+    void draw();
+    void reset();
 
     // Methods for collision
     Pipe& nextPipe();

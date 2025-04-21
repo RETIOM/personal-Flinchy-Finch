@@ -99,3 +99,8 @@ void Player::checkCollision() {
     if (!isAlive) {body.setColor(sf::Color::Red);}
 }
 
+void Player::reset() {
+    angle = sf::degrees(0);
+    ySpeed = 0;
+    body.setPosition(sf::Vector2f(_window.getSize().x / 3 + 1.01*size.x / 2, _window.getSize() .y/ 2));
+}

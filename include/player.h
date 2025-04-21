@@ -17,6 +17,7 @@ public:
     ~Player() = default;
     void update(float deltaTime);
     void draw() const;
+    void reset();
     bool alive() const {return isAlive;};
 private:
     void checkCollision();

@@ -6,7 +6,7 @@
 #define MODE_H
 
 
-enum Mode {
+enum class Mode {
     MANUAL,
     AI
 };

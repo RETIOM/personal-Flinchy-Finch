@@ -14,6 +14,7 @@ public:
 
     void update(float deltaTime, float velocity=100.f);
     void draw() const;
+    void reset();
 private:
     sf::RenderWindow& _window;
     sf::Sprite _ground1;
