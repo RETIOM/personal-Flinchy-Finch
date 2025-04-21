@@ -29,6 +29,7 @@ add_executable(main src/main.cpp
         include/player_manager.h
         src/player_manager.cpp
         include/difficulty.h
-        include/mode.h)
+        include/mode.h
+        include/game_state.h)
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)

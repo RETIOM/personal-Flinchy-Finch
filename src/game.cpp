@@ -20,11 +20,13 @@ font("./assets/PressStart2P-Regular.ttf"), scoreText(font) {
     background.setTexture(&bgTexture);
     background.setPosition(sf::Vector2f(0,0));
     // Score
-    scoreText.setCharacterSize(window.getSize().y / 10);
-    scoreText.setOrigin(sf::Vector2f(scoreText.getLocalBounds().size.x/2, scoreText.getLocalBounds().size.y/2));
+    scoreText.setCharacterSize(_window.getSize().y / 10);
     scoreText.setOutlineColor(sf::Color::Black);
     scoreText.setOutlineThickness(scoreText.getCharacterSize() / 10);
-    scoreText.setPosition(sf::Vector2f(_window.getSize().x / 2,scoreText.getLocalBounds().size.y/2+_window.getSize().y / 10));
+    updateScore();
+    // scoreText.setString(std::to_string(score));
+    // scoreText.setOrigin(sf::Vector2f(scoreText.getLocalBounds().size.x/2, scoreText.getLocalBounds().size.y/2));
+    // scoreText.setPosition(sf::Vector2f(_window.getSize().x / 2,scoreText.getLocalBounds().size.y/2 + _window.getSize().y / 10));
 
     // Handle options
     switch (difficulty) {
@@ -40,7 +42,7 @@ font("./assets/PressStart2P-Regular.ttf"), scoreText(font) {
 void Game::update(float deltaTime) {
     if (players.getAlive()) {
         if (previousScore != score) velocity += deltaSpeed();
-        scoreText.setString(std::to_string(score));
+        updateScore();
         players.update(deltaTime);
         ground.update(deltaTime, velocity);
         pipes.update(deltaTime, velocity);
@@ -60,10 +62,20 @@ void Game::draw() {
 
 void Game::reset() {
     score = 0;
+    isDone = false;
 
     ground.reset();
     pipes.reset();
 
     players.reset(_mode);
+}
+
+void Game::updateScore() {
+    scoreText.setString(std::to_string(score));
+    auto horizontalSize = scoreText.getLocalBounds().size.x;
+    auto verticalSize = scoreText.getLocalBounds().size.y;
+
+    scoreText.setOrigin(sf::Vector2f(horizontalSize / 2, verticalSize / 2));
+    scoreText.setPosition(sf::Vector2f(_window.getSize().x / 2, verticalSize / 3 + _window.getSize().y / 10));
 }
 

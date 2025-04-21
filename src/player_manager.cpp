@@ -43,7 +43,9 @@ void PlayerManager::reset(Mode mode) {
         for (auto &player : players) {
             player->reset();
         }
+        playersAlive = 1;
     }
+
 }
 
 

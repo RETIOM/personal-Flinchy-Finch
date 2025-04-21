@@ -21,6 +21,8 @@ public:
     void reset();
     bool getIsDone() const {return isDone;};
 private:
+    void updateScore();
+
     float velocity = 100.f;
     int score = 0;
     int previousScore = 0;
