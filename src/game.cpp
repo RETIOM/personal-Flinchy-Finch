@@ -31,9 +31,10 @@ font("./assets/PressStart2P-Regular.ttf"), scoreText(font) {
             deltaSpeed = []() {return 0.f;};
             break;
         case Difficulty::HARD:
-            deltaSpeed = [this]() {return score*0.5f;};
+            deltaSpeed = [this]() {return score*0.5f*_window.getSize().x/600.f;};
             break;
     }
+    velocity = _window.getSize().y / 6;
 }
 
 void Game::update(float deltaTime) {

@@ -31,7 +31,7 @@ int Pipe::generatePipePosition() {
     const int max = _window.getSize().y - 112.f - pipeDistance - min;
     const auto mean = (min+max) / 2;
 
-    const int stddev = _window.getSize().y / 3;
+    const int stddev = _window.getSize().y / 4;
 
     static std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
     std::normal_distribution<double> dist(mean, stddev);

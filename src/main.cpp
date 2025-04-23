@@ -10,8 +10,8 @@
 
 int main()
 {
-    auto display_width = 800u;
-    auto display_height = 600u;
+    auto display_width = 1280u;
+    auto display_height = 720u;
 
     auto window = sf::RenderWindow(sf::VideoMode({display_width, display_height}), "Flinchy Finch(TM)",
         sf::Style::Default, sf::State::Windowed);
@@ -25,12 +25,12 @@ int main()
     // + create game class
     // + add speed calculation function(that would be in game.h)
     // + add and handle game states(startup, ready, running, paused)
-    // - create class Agents and its components(neuron, synapse, network)
+    // - create class Agents and its components(neuron, synapse, network)/(Genome, genome translation or smth)
     // - add menu(main(Play(also space), difficulty, mode, exit), restart(play, main menu, score(last, best))
 
 
     // Set manually
-    auto difficulty = Difficulty::EASY;
+    auto difficulty = Difficulty::HARD;
     auto mode = Mode::MANUAL;
 
     Game game(difficulty, mode, window);
