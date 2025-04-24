@@ -1,3 +1,28 @@
 //
 // Created by tommeh on 24.04.25.
 //
+
+#include "../include/node.h"
+
+void Node::addPrevious(Node &previous, double weight) {
+    _previous.push_back(previous);
+    weights.resize(_previous.size());
+    weights(_previous.size()-1) = weight;
+}
+
+
+double Node::getOutput() {
+    if (wasCalled) {
+        return output;
+    }
+    inputs.resize(_previous.size());
+
+    // iterate through previous, put their getOuptu into input matrix
+    for (int i = 0; i < _previous.size(); i++) {
+      inputs(i) = _previous[i].getOutput();
+    }
+
+    output = activationFunction(inputs.dot(weights) + _bias);
+    wasCalled = true;
+    return output;
+}
