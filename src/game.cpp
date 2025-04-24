@@ -11,8 +11,8 @@ topPipeTexture("./assets/tube1.png"), bottomPipeTexture("./assets/tube2.png"),
 birdTexture("./assets/bird.png"),
 _window(window),
 _mode(mode),
-players(_mode, pipes, _window, birdTexture), pipes(_window, topPipeTexture, bottomPipeTexture, score),
 ground(_window, groundTexture),
+pipes(window, topPipeTexture, bottomPipeTexture, score),
 background(sf::Vector2f(_window.getSize().x, _window.getSize().y - 112.f)),
 font("./assets/PressStart2P-Regular.ttf"), scoreText(font) {
     //// Create objects
@@ -34,14 +34,22 @@ font("./assets/PressStart2P-Regular.ttf"), scoreText(font) {
             deltaSpeed = [this]() {return score*0.5f*_window.getSize().x/600.f;};
             break;
     }
+    switch (_mode) {
+        case Mode::MANUAL:
+            players = new PlayerManager(pipes, window, birdTexture);
+            break;
+        // case Mode::AI:
+        //     players = new AIManager(pipes, window, birdTexture);
+    }
+
     velocity = _window.getSize().y / 6;
 }
 
 void Game::update(float deltaTime) {
-    if (players.getAlive()) {
+    if (players->getAlive()) {
         if (previousScore != score) velocity += deltaSpeed();
         updateScore();
-        players.update(deltaTime);
+        players->update(deltaTime);
         ground.update(deltaTime, velocity);
         pipes.update(deltaTime, velocity);
         previousScore = score;
@@ -52,7 +60,7 @@ void Game::update(float deltaTime) {
 
 void Game::draw() {
     _window.draw(background);
-    players.draw(_mode);
+    players->draw();
     pipes.draw();
     ground.draw();
     _window.draw(scoreText);
@@ -65,7 +73,7 @@ void Game::reset() {
     ground.reset();
     pipes.reset();
 
-    players.reset(_mode);
+    players->reset();
 }
 
 void Game::updateScore() {

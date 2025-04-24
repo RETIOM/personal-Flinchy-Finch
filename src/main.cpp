@@ -25,6 +25,8 @@ int main()
     // + create game class
     // + add speed calculation function(that would be in game.h)
     // + add and handle game states(startup, ready, running, paused)
+    // + create abstract class AgentManager and put it above player&AIPlayer
+    // + refactor Game object to work with AgentManager(store pointer to object)
     // - create class Agents and its components(neuron, synapse, network)/(Genome, genome translation or smth)
     // - add menu(main(Play(also space), difficulty, mode, exit), restart(play, main menu, score(last, best))
 

@@ -6,6 +6,7 @@
 #define GAME_H
 #include "difficulty.h"
 #include "mode.h"
+#include "agent_manager.h"
 #include "player_manager.h"
 #include "pipe_manager.h"
 #include "ground.h"
@@ -15,7 +16,7 @@
 class Game {
 public:
     Game(Difficulty difficulty, Mode mode, sf::RenderWindow& window);
-    ~Game() = default;
+    ~Game() {delete players;};
     void update(float deltaTime);
     void draw();
     void reset();
@@ -38,7 +39,7 @@ private:
     sf::RenderWindow& _window;
 
     Mode _mode;
-    PlayerManager players;
+    AgentManager* players;
     PipeManager pipes;
     Ground ground;
 

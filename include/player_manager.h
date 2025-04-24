@@ -5,28 +5,23 @@
 #ifndef PLAYER_MANAGER_H
 #define PLAYER_MANAGER_H
 
+#include "agent_manager.h"
 #include "player.h"
 #include "pipe_manager.h"
-#include "mode.h"
-#include <vector>
-#include <memory>
 
-class PlayerManager {
+class PlayerManager : public AgentManager {
 public:
-    PlayerManager(Mode mode, PipeManager &pipes, sf::RenderWindow& window, sf::Texture& birdTexture);
-    ~PlayerManager() = default;
-    std::size_t getAlive() {return playersAlive;};
-    void update(float deltaTime);
-    void draw(Mode mode);
-    void reset(Mode mode);
+    PlayerManager(PipeManager &pipes, sf::RenderWindow &window, sf::Texture &birdTexture) : _pipes(pipes), _window(window), player(pipes, window, birdTexture){}
+    ~PlayerManager() override = default;
+    std::size_t getAlive() override {return player.alive();};
+    void update(float deltaTime) override {player.update(deltaTime);};
+    void draw() override {player.draw();};
+    void reset() override {player.reset();};
 private:
     PipeManager &_pipes;
-    sf::Texture& _birdTexture;
     sf::RenderWindow &_window;
-    std::vector<std::unique_ptr<Player>> players;
-    Mode _mode;
 
-    std::size_t playersAlive;
+    Player player;
 };
 
 #endif //PLAYER_MANAGER_H

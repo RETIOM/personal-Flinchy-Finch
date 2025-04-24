@@ -4,13 +4,15 @@ project(FlinchyFinch LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(PROJECT_ROOT_DIR $(CMAKE_SOURCE_DIR))
 
+find_package(Eigen3 REQUIRED)
+
 include(FetchContent)
 FetchContent_Declare(SFML
-    GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG 3.0.0
-    GIT_SHALLOW ON
-    EXCLUDE_FROM_ALL
-    SYSTEM)
+        GIT_REPOSITORY https://github.com/SFML/SFML.git
+        GIT_TAG 3.0.0
+        GIT_SHALLOW ON
+        EXCLUDE_FROM_ALL
+        SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
 add_executable(main src/main.cpp
@@ -30,6 +32,14 @@ add_executable(main src/main.cpp
         src/player_manager.cpp
         include/difficulty.h
         include/mode.h
-        include/game_state.h)
+        include/game_state.h
+        include/synapse.h
+        include/agent_manager.h)
+#        include/node.h
+#        include/genome.h
+#        include/node_type.h
+#        src/node.cpp)
+
 target_compile_features(main PRIVATE cxx_std_17)
-target_link_libraries(main PRIVATE SFML::Graphics)
+
+target_link_libraries(main PRIVATE SFML::Graphics Eigen3::Eigen)
