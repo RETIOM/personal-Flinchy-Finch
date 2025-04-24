@@ -19,18 +19,22 @@
 class Genome {
 public:
     Genome(int inputNumber, int outputNumber);
+
+    static double getRandom();
+
     ~Genome() = default;
-    double getOutput();
+    std::vector<double> getOutput(std::vector<double> input);
 
 private:
     std::vector<Node> nodeGenes;
     std::vector<Synapse> connectionGenes;
 
     std::vector<Node*> inputNodes;
-    Node* outputNode;
+    std::vector<Node*> outputNodes;
 
     void prepareNetwork();
     void resetNetwork();
+    void setInputs(std::vector<double> &input);
 
 };
 

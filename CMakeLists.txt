@@ -34,7 +34,8 @@ add_executable(main src/main.cpp
         include/mode.h
         include/game_state.h
         include/synapse.h
-        include/agent_manager.h)
+        include/agent_manager.h
+        src/genome.cpp)
 #        include/node.h
 #        include/genome.h
 #        include/node_type.h

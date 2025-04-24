@@ -32,6 +32,9 @@ public:
     double getOutput();
     void addPrevious(Node& previous, double weight);
     void setBias(double bias);
+    void reset() {_type != NodeType::INPUT ? wasCalled = false : wasCalled = true;}
+
+    void setOutput(double output);
 private:
     NodeType _type;
     std::vector<Node&> _previous;

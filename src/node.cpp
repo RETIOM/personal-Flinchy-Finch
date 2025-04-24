@@ -4,6 +4,7 @@
 
 #include "../include/node.h"
 
+
 void Node::addPrevious(Node &previous, double weight) {
     _previous.push_back(previous);
     weights.resize(_previous.size());
@@ -25,4 +26,10 @@ double Node::getOutput() {
     output = activationFunction(inputs.dot(weights) + _bias);
     wasCalled = true;
     return output;
+}
+
+void Node::setOutput(double input) {
+	if (_type == NodeType::INPUT) {
+          output = input;
+	}
 }
