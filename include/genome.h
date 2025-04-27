@@ -25,12 +25,12 @@ public:
     Genome(int inputNumber, int outputNumber);
     // Constructor used for Crossover:
     Genome(Genome& fitterParent, Genome& otherParent);
-
-    static double getRandom(float min = -2.0, float max = 2.0);
-
     ~Genome() = default;
+
+    // Computing network
     std::vector<double> getOutput(const std::vector<double> &input);
 
+    static double getRandom(float min = -2.0, float max = 2.0);
     inline static int innovationNumber = 1;
     static void increaseInnovation() {innovationNumber++;};
     static int getInnovation() {return innovationNumber;}
@@ -40,7 +40,6 @@ public:
     static int getNodeNumber() {return hiddenNodeNumber;}
 
     static std::unordered_map<std::pair<int,int>, int> synapseMap;
-    // void mutate();
 
     inline static int INodes;
     inline static int ONodes;

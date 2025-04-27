@@ -29,6 +29,7 @@ int main()
     // + refactor Game object to work with AgentManager(store pointer to object)
     // - create class Agents and its components(neuron, synapse, network)/(Genome, genome translation or smth)
     // - add menu(main(Play(also space), difficulty, mode, exit), restart(play, main menu, score(last, best))
+    // - add central CONFIG file for all options(screen size, speeds, GENETIC PARAMS)
 
 
     // Set manually

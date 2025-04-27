@@ -18,7 +18,7 @@ double Node::getOutput() {
     }
     inputs.resize(_previous.size());
 
-    // iterate through previous, put their getOuptu into input matrix
+    // iterate through previous, put their getOuptut into input matrix
     for (int i = 0; i < _previous.size(); i++) {
       inputs(i) = _previous[i]->getOutput();
     }

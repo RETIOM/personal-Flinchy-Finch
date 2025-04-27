@@ -14,13 +14,11 @@
 /* Node will be made up of
  * Attributes:
  * - TYPE
- * - bias
  * - vector of input nodes and/or values
  * - vector of weights
  * - activation function
  * - output
  * - wasCalled bool
- * - reference to global innovation number
  * Methods:
  * - getOutput
 */
@@ -49,7 +47,7 @@ private:
     double output = 0;
     bool wasCalled = false;
 
-    double activationFunction(double interimOutput) {return 1.0 / (1.0 + std::exp(-interimOutput));};
+    static double activationFunction(double interimOutput) {return 1.0 / (1.0 + std::exp(-interimOutput));};
 };
 
 
