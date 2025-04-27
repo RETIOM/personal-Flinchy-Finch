@@ -35,12 +35,12 @@ add_executable(main src/main.cpp
         include/game_state.h
         include/synapse.h
         include/agent_manager.h
-        src/genome.cpp)
-#        include/node.h
-#        include/genome.h
-#        include/node_type.h
-#        src/node.cpp)
+        src/genome.cpp
+        include/node.h
+        include/genome.h
+        include/node_type.h
+        src/node.cpp)
 
-target_compile_features(main PRIVATE cxx_std_17)
+target_compile_features(main PRIVATE cxx_std_20)
 
 target_link_libraries(main PRIVATE SFML::Graphics Eigen3::Eigen)

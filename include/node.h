@@ -8,6 +8,7 @@
 #include "node_type.h"
 #include <vector>
 #include <Eigen/Dense>
+#include <memory>
 
 /* Node will be made up of
  * Attributes:
@@ -27,17 +28,17 @@
 
 class Node {
 public:
-    Node(const NodeType type = NodeType::HIDDEN, const double bias): _type(type), _bias(bias) {}
+    Node(const NodeType type = NodeType::HIDDEN): _type(type){}
     ~Node() = default;
     double getOutput();
-    void addPrevious(Node& previous, double weight);
-    void setBias(double bias);
+    void addPrevious(const std::shared_ptr<Node> &previous, double weight);
     void reset() {_type != NodeType::INPUT ? wasCalled = false : wasCalled = true;}
 
     void setOutput(double output);
+
 private:
     NodeType _type;
-    std::vector<Node&> _previous;
+    std::vector<std::shared_ptr<Node>> _previous;
 
     // weights
     Eigen::VectorXd weights;
@@ -46,8 +47,8 @@ private:
 
     double output = 0;
     bool wasCalled = false;
+
     double activationFunction(double interimOutput);
-    double _bias;
 };
 
 

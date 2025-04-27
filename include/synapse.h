@@ -9,15 +9,15 @@
 
 class Synapse {
 public:
-    Synapse(Node& start, Node& end, double weight, int innovationNumber): _start(start), _end(end), _weight(weight), historicalNumber(innovationNumber) {};
+    Synapse(int start, int end, double weight, int innovationNumber): _start(start), _end(end), _weight(weight), historicalNumber(innovationNumber) {};
     ~Synapse() = default;
     void disable() {isEnabled = false;}
     void enable() {isEnabled = true;}
     void changeWeight(double newWeight) {_weight = newWeight;}
 
     bool isEnabled = true;
-    Node& _start;
-    Node& _end;
+    int _start;
+    int _end;
     double _weight;
     int historicalNumber;
 };

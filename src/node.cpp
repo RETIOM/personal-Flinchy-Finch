@@ -5,7 +5,7 @@
 #include "../include/node.h"
 
 
-void Node::addPrevious(Node &previous, double weight) {
+void Node::addPrevious(const std::shared_ptr<Node> &previous, double weight) {
     _previous.push_back(previous);
     weights.resize(_previous.size());
     weights(_previous.size()-1) = weight;
@@ -20,11 +20,12 @@ double Node::getOutput() {
 
     // iterate through previous, put their getOuptu into input matrix
     for (int i = 0; i < _previous.size(); i++) {
-      inputs(i) = _previous[i].getOutput();
+      inputs(i) = _previous[i]->getOutput();
     }
 
-    output = activationFunction(inputs.dot(weights) + _bias);
-    wasCalled = true;
+    // output = activationFunction(inputs.dot(weights));
+    output = 1.0;
+    _type != NodeType::OUTPUT ? wasCalled = true : wasCalled = false;
     return output;
 }
 
