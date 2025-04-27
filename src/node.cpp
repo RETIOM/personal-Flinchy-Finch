@@ -23,7 +23,7 @@ double Node::getOutput() {
       inputs(i) = _previous[i]->getOutput();
     }
 
-    // output = activationFunction(inputs.dot(weights));
+    output = activationFunction(inputs.dot(weights));
     output = 1.0;
     _type != NodeType::OUTPUT ? wasCalled = true : wasCalled = false;
     return output;
@@ -34,3 +34,5 @@ void Node::setOutput(double input) {
           output = input;
 	}
 }
+
+

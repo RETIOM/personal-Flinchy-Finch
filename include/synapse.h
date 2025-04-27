@@ -11,8 +11,7 @@ class Synapse {
 public:
     Synapse(int start, int end, double weight, int innovationNumber): _start(start), _end(end), _weight(weight), historicalNumber(innovationNumber) {};
     ~Synapse() = default;
-    void disable() {isEnabled = false;}
-    void enable() {isEnabled = true;}
+    void changeEnable() {isEnabled = !isEnabled;}
     void changeWeight(double newWeight) {_weight = newWeight;}
 
     bool isEnabled = true;

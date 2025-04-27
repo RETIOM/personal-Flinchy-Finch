@@ -9,6 +9,7 @@
 #include <vector>
 #include <Eigen/Dense>
 #include <memory>
+#include <cmath>
 
 /* Node will be made up of
  * Attributes:
@@ -48,7 +49,7 @@ private:
     double output = 0;
     bool wasCalled = false;
 
-    double activationFunction(double interimOutput);
+    double activationFunction(double interimOutput) {return 1.0 / (1.0 + std::exp(-interimOutput));};
 };
 
 
