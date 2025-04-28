@@ -24,7 +24,7 @@ public:
 private:
   // Computes: distanceFromGround, distanceFromPipeX, distanceFromTopOfHoleY, distanceFromBottomOfHoleY, maybe ySpeed?
   std::vector<double> prepareInputs() const;
-  const int inputs = 4;
+  const int inputs = 5;
   const int outputs = 1;
 };
 

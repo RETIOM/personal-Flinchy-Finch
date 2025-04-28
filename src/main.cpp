@@ -71,6 +71,11 @@ int main()
             state = GameState::READY;
         }
 
+        if (mode == Mode::AI && game.getIsDone()) {
+            game.reset();
+            state = GameState::RUNNING;
+        }
+
 
         deltaTime = clock.restart().asSeconds();
         if (state == GameState::RUNNING) {

@@ -39,7 +39,7 @@ font("./assets/PressStart2P-Regular.ttf"), scoreText(font) {
             players = new PlayerManager(pipes, window, birdTexture);
             break;
         // case Mode::AI:
-        //     players = new AIManager(pipes, window, birdTexture);
+        //     players = new AIManager(pipes, window, birdTexture, maxPlayers);
     }
 
     velocity = _window.getSize().y / 6;

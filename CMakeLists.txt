@@ -41,7 +41,8 @@ add_executable(main src/main.cpp
         include/node_type.h
         src/node.cpp
         include/AI_player.h
-        src/AI_player.cpp)
+        src/AI_player.cpp
+        src/AI_manager.cpp)
 
 target_compile_features(main PRIVATE cxx_std_20)
 
