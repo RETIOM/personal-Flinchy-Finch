@@ -27,13 +27,20 @@
 
 class Node {
 public:
-    Node(const NodeType type = NodeType::HIDDEN): _type(type){}
+    Node(const NodeType type = NodeType::HIDDEN): _type(type){ _type == NodeType::INPUT ? wasCalled = true : false; }
     ~Node() = default;
     double getOutput();
     void addPrevious(const std::shared_ptr<Node> &previous, double weight);
     void reset() {_type != NodeType::INPUT ? wasCalled = false : wasCalled = true;}
 
     void setOutput(double output);
+
+    // Testing
+    Eigen::VectorXd& getWeights() {return weights;}
+    bool getWasCalled() {return wasCalled;};
+    NodeType getType() {return _type;};
+    std::vector<std::shared_ptr<Node>> getPrevious() {return _previous;};
+    Eigen::VectorXd& getInputs() {return inputs;};
 
 private:
     NodeType _type;
@@ -47,7 +54,11 @@ private:
     double output = 0;
     bool wasCalled = false;
 
-    static double activationFunction(double interimOutput) {return 1.0 / (1.0 + std::exp(-interimOutput));};
+    // static double activationFunction(double interimOutput) {return 1.0 / (1.0 + std::exp(-interimOutput));};
+
+    // reLU for testing
+    static double activationFunction(const double interimOutput) {return std::max(0.0, interimOutput);}
+
 };
 
 

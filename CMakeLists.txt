@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.28)
 project(FlinchyFinch LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
-set(PROJECT_ROOT_DIR $(CMAKE_SOURCE_DIR))
 
 find_package(Eigen3 REQUIRED)
 
@@ -15,35 +14,26 @@ FetchContent_Declare(SFML
         SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(main src/main.cpp
+add_library(flinchy_core
         src/player.cpp
-        include/player.h
         src/pipe.cpp
-        include/pipe.h
         src/game.cpp
-        include/game.h
         src/animation.cpp
-        include/animation.h
         src/ground.cpp
-        include/ground.h
-        include/pipe_manager.h
         src/pipe_manager.cpp
-        include/player_manager.h
         src/player_manager.cpp
-        include/difficulty.h
-        include/mode.h
-        include/game_state.h
-        include/synapse.h
-        include/agent_manager.h
         src/genome.cpp
-        include/node.h
-        include/genome.h
-        include/node_type.h
         src/node.cpp
-        include/AI_player.h
         src/AI_player.cpp
-        src/AI_manager.cpp)
+        src/AI_manager.cpp
+)
 
-target_compile_features(main PRIVATE cxx_std_20)
+target_include_directories(flinchy_core PUBLIC include)
+target_link_libraries(flinchy_core PUBLIC SFML::Graphics Eigen3::Eigen)
+target_compile_features(flinchy_core PUBLIC cxx_std_20)
 
-target_link_libraries(main PRIVATE SFML::Graphics Eigen3::Eigen)
+add_executable(main src/main.cpp)
+target_link_libraries(main PRIVATE flinchy_core)
+
+enable_testing()
+add_subdirectory(tests)

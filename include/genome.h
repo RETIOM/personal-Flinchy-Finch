@@ -48,13 +48,23 @@ public:
     void addConnection(int start, int end, double weight);
 
     double compareSimilarity(Genome& genome);
+
+    // Functions for testing
+    void addConnection(Synapse& synapse) {connectionGenes.push_back(synapse);};
+    void runInferNetwork() {inferNetwork();}
+    std::unordered_map<int, std::shared_ptr<Node>> getNodes() {return nodes;};
+    std::vector<Synapse>& getConnections() {return connectionGenes;};
+    void runSetInputs(const std::vector<double> &inputs) {setInputs(inputs);}
+    std::vector<std::shared_ptr<Node>>& getInputNodes() {return inputNodes;};
+    std::vector<std::shared_ptr<Node>>& getOutputNodes() {return outputNodes;};
+
 private:
     // std::vector<Node> nodeGenes;
     std::unordered_map<int, std::shared_ptr<Node>> nodes;
     std::vector<Synapse> connectionGenes;
 
-    std::vector<Node> inputNodes;
-    std::vector<Node> outputNodes;
+    std::vector<std::shared_ptr<Node>> inputNodes;
+    std::vector<std::shared_ptr<Node>> outputNodes;
 
 
     // Crossover functions

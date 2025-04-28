@@ -4,14 +4,18 @@
 #include "../include/genome.h"
 #include <random>
 
+#include <iostream>
+
 Genome::Genome(int inputNumber, int outputNumber) {
     for (int i = 1; i <= inputNumber; i++) {
-        inputNodes.emplace_back(NodeType::INPUT);
-        nodes.insert({i, std::make_shared<Node>(inputNodes.back())});
+        auto newInputNode = std::make_shared<Node>(NodeType::INPUT);
+        inputNodes.push_back(newInputNode);
+        nodes[i] = newInputNode;
     }
     for (int i = 1; i <= outputNumber; i++) {
-        outputNodes.emplace_back(NodeType::OUTPUT);
-        nodes.insert({i+inputNumber, std::make_shared<Node>(outputNodes.back())});
+        auto newOutputNode = std::make_shared<Node>(NodeType::OUTPUT);
+        outputNodes.push_back(newOutputNode);
+        nodes[i+inputNumber] = newOutputNode;
     }
     setIONodes(inputNumber, outputNumber);
 }
@@ -19,12 +23,14 @@ Genome::Genome(int inputNumber, int outputNumber) {
 Genome::Genome(Genome &fitterParent, Genome &otherParent) {
     // Handle IO nodes
     for (int i = 1; i <= INodes; i++) {
-        inputNodes.emplace_back(NodeType::INPUT);
-        nodes.insert({i, std::make_shared<Node>(inputNodes.back())});
+        auto newInputNode = std::make_shared<Node>(NodeType::INPUT);
+        inputNodes.push_back(newInputNode);
+        nodes[i] = newInputNode;
     }
     for (int i = 1; i <= ONodes; i++) {
-        outputNodes.emplace_back(NodeType::OUTPUT);
-        nodes.insert({i+INodes, std::make_shared<Node>(outputNodes.back())});
+        auto newOutputNode = std::make_shared<Node>(NodeType::OUTPUT);
+        outputNodes.push_back(newOutputNode);
+        nodes[i+INodes] = newOutputNode;
     }
 
     // Handle Crossover
@@ -82,10 +88,9 @@ double Genome::getRandom(const float min, const float max) {
 
 std::vector<double> Genome::getOutput(const std::vector<double> &input) {
     setInputs(input);
-    resetNetwork();
     std::vector<double> output;
-    for (auto& nodeGene : outputNodes) {
-        output.push_back(nodeGene.getOutput());
+    for (const auto& nodeGene : outputNodes) {
+        output.push_back(nodeGene->getOutput());
     }
     resetNetwork();
     return output;
@@ -93,7 +98,7 @@ std::vector<double> Genome::getOutput(const std::vector<double> &input) {
 
 void Genome::setInputs(const std::vector<double> &input) {
     for (int i = 0; i < inputNodes.size(); i++) {
-        inputNodes[i].setOutput(input[i]);
+        inputNodes[i]->setOutput(input[i]);
     }
 }
 
