@@ -14,15 +14,14 @@
 class Player {
 public:
     Player(PipeManager& pipes, sf::RenderWindow& window, sf::Texture& texture);
-    ~Player() = default;
-    void update(float deltaTime);
+    virtual ~Player() = default;
+    virtual void update(float deltaTime);
     void draw() const;
     void reset();
     bool alive() const {return isAlive;};
-private:
+protected:
     void checkCollision();
 
-private:
     sf::RenderWindow& _window;
     sf::Angle angle;
     float ySpeed;
@@ -35,7 +34,7 @@ private:
     float jumpSpeed = -400.f;
     float rotation = 200.0f;
 
-    bool wasSpacePressed = false;
+    bool hasJumped = false;
 
     bool isAlive = true;
 

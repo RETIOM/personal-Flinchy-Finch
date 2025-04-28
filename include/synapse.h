@@ -13,6 +13,7 @@ public:
     ~Synapse() = default;
     void changeEnable() {isEnabled = !isEnabled;}
     void changeWeight(double newWeight) {_weight = newWeight;}
+    void perturbeWeight(double multiplier) {_weight *= multiplier;}
 
     bool isEnabled = true;
     int _start;

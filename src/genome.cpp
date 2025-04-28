@@ -34,11 +34,18 @@ Genome::Genome(Genome &fitterParent, Genome &otherParent) {
     int i = 0, j = 0;
 
     while (i < fitGenes.size() && j < otherGenes.size()) {
-        // Matching pair
+        // Matching pair(handle mutateEnabled)
         if (fitGenes[i].historicalNumber == otherGenes[j].historicalNumber) {
+            // Choose random version
             if (static_cast<int>(getRandom(0,2)) == 1)
                 connectionGenes.push_back(fitGenes[i]);
             else connectionGenes.push_back(otherGenes[j]);
+
+            // Handle mutation
+            if (fitGenes[i].isEnabled && fitGenes[j].isEnabled) {
+                const double probMutDis = 0.75;
+                if (getRandom(0,1) < probMutDis) {connectionGenes.back().changeEnable();}
+            }
             i++; j++;
         }
         // Disjoint in fitter parent
@@ -80,6 +87,7 @@ std::vector<double> Genome::getOutput(const std::vector<double> &input) {
     for (auto& nodeGene : outputNodes) {
         output.push_back(nodeGene.getOutput());
     }
+    resetNetwork();
     return output;
 }
 
@@ -115,6 +123,101 @@ void Genome::inferNetwork() {
 bool Genome::compareHistorical(Synapse& synapse1, Synapse& synapse2) {
     return synapse1.historicalNumber < synapse2.historicalNumber;
 }
+
+double Genome::compareSimilarity(Genome &genome) {
+    const auto selfGenome = getConnectionGenes();
+    const auto otherGenome = getConnectionGenes();
+
+    const auto N = std::max(selfGenome.size(), otherGenome.size());
+    const auto n = std::min(selfGenome.size(), otherGenome.size());
+
+    int excess = 0, disjoint = 0, equal = 0;
+    double weightDifference = 0.0;
+
+    int i = 0, j = 0;
+
+    while (i < selfGenome.size() && j < otherGenome.size()) {
+        if (selfGenome[i].historicalNumber == otherGenome[j].historicalNumber) {
+            weightDifference += std::abs(selfGenome[i]._weight - otherGenome[j]._weight);
+            i++; j++; equal++;
+        }
+        else if (selfGenome[i].historicalNumber < otherGenome[j].historicalNumber) i++;
+        else j++;
+        disjoint++;
+    }
+
+    excess = N-n-disjoint;
+
+    return c1*excess/N+c1*disjoint/N+c3*weightDifference/equal;
+}
+
+
+
+void Genome::mutateWeight() {
+    const double perturbeOverRandom = 0.9;
+
+    if (getRandom(0, 1) > perturbeOverRandom) {
+        randomWeight();
+    }
+    else perturbeWeight();
+}
+
+void Genome::randomWeight() {
+    const auto id = static_cast<int>(getRandom(0,connectionGenes.size()));
+    connectionGenes[id].changeWeight(getRandom());
+}
+
+void Genome::perturbeWeight() {
+    const auto id = static_cast<int>(getRandom(0,connectionGenes.size()));
+    connectionGenes[id].perturbeWeight(getRandom(0,2));
+}
+
+void Genome::mutateNode() {
+    const auto synapseId = static_cast<int>(getRandom(0,connectionGenes.size()));
+    const auto start = connectionGenes[synapseId]._start;
+    const auto end = connectionGenes[synapseId]._end;
+
+    int newNodeNumber = getNodeNumber()+getIONodes();
+    nodes.insert({newNodeNumber, std::make_shared<Node>()});
+
+    addConnection(start, newNodeNumber, 1);
+    addConnection(newNodeNumber, end, connectionGenes[synapseId]._weight);
+    connectionGenes[synapseId].changeEnable();
+}
+
+
+void Genome::addConnection(int start, int end, double weight) {
+    auto historicalNumber = getInnovation();
+    connectionGenes.emplace_back(start, end, weight, historicalNumber);
+}
+
+// This wont work :); No assurance that the end is AFTER the start => topsort needs to be implemented :(
+void Genome::mutateConnection() {
+    int startNodeId, endNodeId;
+    do {
+        startNodeId = static_cast<int>(getRandom(0,nodes.size()));
+    } while (startNodeId >= INodes && startNodeId < getIONodes());
+    endNodeId = static_cast<int>(getRandom(INodes,nodes.size()));
+}
+
+void Genome::mutate() {
+    constexpr double probMutWeight = 0.8;
+    constexpr double probMutConn = 0.05;
+    constexpr double probMutNode = 0.03;
+
+    if (getRandom(0,1) < probMutWeight) mutateWeight();
+    if (getRandom(0,1) < probMutConn) mutateConnection();
+    if (getRandom(0,1) < probMutNode) mutateNode();
+}
+
+
+
+
+
+
+
+
+
 
 
 

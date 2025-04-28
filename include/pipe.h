@@ -20,6 +20,7 @@ public:
     float getBackPosition() const {return topPipe.getGlobalBounds().size.x + topPipe.getPosition().x;}
 
 
+
     // Methods for collision below
     bool isPassedPlayer() const { return passedPlayer; };
     sf::FloatRect topPipeBody() { return topPipe.getGlobalBounds(); };
@@ -27,7 +28,9 @@ public:
 
     // Methods for AI below(topPosition getter, botPosition getter, x position getter)
     float getPosition() const { return topPipe.getPosition().x; }
-
+    float getFrontPosition() const {return topPipe.getGlobalBounds().size.x - topPipe.getPosition().x;}
+    float getTopYPosition() const {return topPipe.getPosition().y;}
+    float getBottomYPosition() const {return bottomPipe.getPosition().y;}
 
     void update(float deltaTime, float velocity = 100.f);
     void draw() const;

@@ -39,7 +39,9 @@ add_executable(main src/main.cpp
         include/node.h
         include/genome.h
         include/node_type.h
-        src/node.cpp)
+        src/node.cpp
+        include/AI_player.h
+        src/AI_player.cpp)
 
 target_compile_features(main PRIVATE cxx_std_20)
 

@@ -32,12 +32,10 @@ public:
 
     static double getRandom(float min = -2.0, float max = 2.0);
     inline static int innovationNumber = 1;
-    static void increaseInnovation() {innovationNumber++;};
-    static int getInnovation() {return innovationNumber;}
+    static int getInnovation() {return innovationNumber++;};
 
     inline static int hiddenNodeNumber = 1;
-    static void increaseNodeNumber() {hiddenNodeNumber++;};
-    static int getNodeNumber() {return hiddenNodeNumber;}
+    static int getNodeNumber() {return hiddenNodeNumber++;}
 
     static std::unordered_map<std::pair<int,int>, int> synapseMap;
 
@@ -47,8 +45,9 @@ public:
     static void setIONodes(int inputs, int outputs) {INodes=inputs; ONodes=outputs;};
 
     std::vector<Synapse>& getConnectionGenes() {std::sort(connectionGenes.begin(), connectionGenes.end(), compareHistorical); return connectionGenes;};
-    void addConnection(const Synapse& synapse) {connectionGenes.push_back(synapse);};
+    void addConnection(int start, int end, double weight);
 
+    double compareSimilarity(Genome& genome);
 private:
     // std::vector<Node> nodeGenes;
     std::unordered_map<int, std::shared_ptr<Node>> nodes;
@@ -61,12 +60,19 @@ private:
     // Crossover functions
     static bool compareHistorical(Synapse& synapse1, Synapse& synapse2);
 
+    // Speciation functions
+    const double c1 = 1.0;
+    const double c2 = 1.0;
+    const double c3 = 0.4;
+
+
 
     // Mutation functions
     void mutate(); // Mutation wrapper
     void mutateConnection(); // Add connection
     void mutateNode(); // Add node in existing connection
-    void changeEnabled(); // Disable/Enable a connection
+    // mutateEnabled handled by crossover constructor
+    void mutateWeight();
     void perturbeWeight(); // Multiply between [0,2]
     void randomWeight(); // In the name
 

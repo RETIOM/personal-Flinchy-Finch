@@ -43,10 +43,10 @@ void Player::update(float deltaTime) {
 
 
     const bool isJumpKeyDown = sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space);
-    if (isJumpKeyDown && !wasSpacePressed) {
+    if (isJumpKeyDown && !hasJumped) {
         ySpeed = jumpSpeed;
     }
-    wasSpacePressed = isJumpKeyDown;
+    hasJumped = isJumpKeyDown;
 
     movement.y += ySpeed * deltaTime;
 
@@ -63,7 +63,7 @@ void Player::update(float deltaTime) {
 
     body.setRotation(angle);
 
-    animation.update(deltaTime, angle == sf::degrees(90), wasSpacePressed);
+    animation.update(deltaTime, angle == sf::degrees(90), hasJumped);
     body.setTextureRect(animation._uvRect);
     this->checkCollision();
 }
