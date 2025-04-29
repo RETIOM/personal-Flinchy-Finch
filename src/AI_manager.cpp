@@ -38,18 +38,42 @@ void AIManager::draw() {
 // Handles selection and breeding, consider helper functions(split into helpers perhaps)
 void AIManager::reset() {
     int speciesCount = 0;
-    std::unordered_map<int, std::vector<std::unique_ptr<AIPlayer>>> species;
+    std::unordered_map<int, std::vector<std::unique_ptr<AIPlayer>>> speciesMap;
+    std::vector<AIPlayer> newPlayers;
 
     // Divide into species
     for (auto &player : players) {
-    for (auto &[num, specimen] : species) {
-    if (player.compareSimilarity(*specimen[0]) < similarityThreshold) species[num].push_back(std::make_unique<AIPlayer>(player));
-    }
-    speciesCount++;
-    species[speciesCount].push_back(std::make_unique<AIPlayer>(player));
+        for (auto &[num, species] : speciesMap) {
+            if (player.compareSimilarity(*species[0]) < similarityThreshold) {
+                speciesMap[num].push_back(std::make_unique<AIPlayer>(player));
+            }
+        }
+        speciesCount++;
+        speciesMap[speciesCount].push_back(std::make_unique<AIPlayer>(player));
     }
 
     // Recalculate fitness
+    for (auto& [num, species] : speciesMap) {
+        int totalFitness = 0;
+        for (const auto& organism : species) {
+            totalFitness += organism->fitnessScore;
+        }
+        for (auto& organism : species) {
+            organism->fitnessScore /= totalFitness;
+        }
+        std::ranges::sort(species);
+    }
+
+    // Move fittest
+    for (auto& [num, species] : speciesMap) {
+        if (species.size() > 5) {
+            newPlayers.emplace_back(*species[0], _birdtexture);
+        }
+    }
+
+    // Move without breeding
+
+    // Breed(with a chance of interSpecies)
 }
 
 

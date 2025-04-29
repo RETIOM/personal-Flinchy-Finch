@@ -27,13 +27,15 @@
 
 class Node {
 public:
-    Node(const NodeType type = NodeType::HIDDEN): _type(type){ _type == NodeType::INPUT ? wasCalled = true : false; }
+    Node(const NodeType type, const int nodeNumber): _type(type), _nodeNumber(nodeNumber) { _type == NodeType::INPUT ? wasCalled = true : false; }
     ~Node() = default;
     double getOutput();
     void addPrevious(const std::shared_ptr<Node> &previous, double weight);
     void reset() {_type != NodeType::INPUT ? wasCalled = false : wasCalled = true;}
 
     void setOutput(double output);
+
+    int getNumber() {return _nodeNumber;}
 
     // Testing
     Eigen::VectorXd& getWeights() {return weights;}
@@ -53,6 +55,8 @@ private:
 
     double output = 0;
     bool wasCalled = false;
+
+    int _nodeNumber;
 
     // static double activationFunction(double interimOutput) {return 1.0 / (1.0 + std::exp(-interimOutput));};
 

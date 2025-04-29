@@ -12,6 +12,8 @@ public:
     Synapse(int start, int end, double weight, int innovationNumber): _start(start), _end(end), _weight(weight), historicalNumber(innovationNumber) {};
     ~Synapse() = default;
     void changeEnable() {isEnabled = !isEnabled;}
+    void enable() {isEnabled = true;}
+    void disable() {isEnabled = false;}
     void changeWeight(double newWeight) {_weight = newWeight;}
     void perturbeWeight(double multiplier) {_weight *= multiplier;}
 

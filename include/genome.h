@@ -10,6 +10,8 @@
 
 #include <optional>
 #include <unordered_map>
+#include <unordered_set>
+#include <deque>
 #include <memory>
 #include <algorithm>
 
@@ -37,7 +39,22 @@ public:
     inline static int hiddenNodeNumber = 1;
     static int getNodeNumber() {return hiddenNodeNumber++;}
 
-    static std::unordered_map<std::pair<int,int>, int> synapseMap;
+    // Hash function for std::pair<int><int>
+    struct PairHash {
+        std::size_t operator()(const std::pair<int, int>& p) const {
+            // Get hash values for both components
+            std::size_t h1 = std::hash<int>{}(p.first);
+            std::size_t h2 = std::hash<int>{}(p.second);
+
+            // Combine the hash values using bitwise operations
+            return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
+        }
+    };
+
+    inline static std::unordered_map<std::pair<int,int>, int, PairHash> synapseMap;
+    static bool checkSynapseMap(std::pair<int,int> synapse) {return synapseMap.contains(synapse);};
+    static int getSynapseNumber(std::pair<int,int> synapse) {return synapseMap[synapse];};
+    static void addSynapseNumber(std::pair<int,int> synapse, int historicalNumber) {synapseMap[synapse] = historicalNumber;};
 
     inline static int INodes;
     inline static int ONodes;
@@ -45,7 +62,7 @@ public:
     static void setIONodes(int inputs, int outputs) {INodes=inputs; ONodes=outputs;};
 
     std::vector<Synapse>& getConnectionGenes() {std::sort(connectionGenes.begin(), connectionGenes.end(), compareHistorical); return connectionGenes;};
-    void addConnection(int start, int end, double weight);
+    void setupNewNode(int start, int end, double weight);
 
     double compareSimilarity(Genome& genome);
 
@@ -57,9 +74,9 @@ public:
     void runSetInputs(const std::vector<double> &inputs) {setInputs(inputs);}
     std::vector<std::shared_ptr<Node>>& getInputNodes() {return inputNodes;};
     std::vector<std::shared_ptr<Node>>& getOutputNodes() {return outputNodes;};
+    std::vector<int> runTopSort() {return topSort();};
 
 private:
-    // std::vector<Node> nodeGenes;
     std::unordered_map<int, std::shared_ptr<Node>> nodes;
     std::vector<Synapse> connectionGenes;
 
@@ -75,7 +92,8 @@ private:
     const double c2 = 1.0;
     const double c3 = 0.4;
 
-
+    // Topological sort
+    std::vector<int> topSort();
 
     // Mutation functions
     void mutate(); // Mutation wrapper

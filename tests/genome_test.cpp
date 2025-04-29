@@ -273,6 +273,36 @@ TEST(OutputTests, OutputTests_MediumOutput) {
     ASSERT_EQ(genome.getOutput(input), expectedOutput);
 }
 
+TEST(OutputTests, OutputTests_HandlesDisabled) {
+    Genome genome(3,1);
+    Synapse synapse1(1, 4, 0.5, 1);
+    Synapse synapse2(2, 4, 0.1, 2);
+    synapse2.changeEnable();
+    Synapse synapse3(3,4,0.3,3);
+    Synapse synapse4(2,5,0.4,4);
+    Synapse synapse5(5,4,-1,5);
+    Synapse synapse6(1,5,1,8);
+    genome.addConnection(synapse1);
+    genome.addConnection(synapse5);
+    genome.addConnection(synapse2);
+    genome.addConnection(synapse6);
+    genome.addConnection(synapse3);
+    genome.addConnection(synapse4);
+
+    genome.runInferNetwork();
+
+    std::vector<double> input;
+    input.push_back(-1);
+    input.push_back(5);
+    input.push_back(10);
+
+    std::vector<double> expectedOutput;
+    expectedOutput.push_back(1.5);
+
+    ASSERT_EQ(genome.getOutput(input), expectedOutput);
+}
+
+
 TEST(OutputTests, OutputTests_FinalBoss) {
     Genome genome(4,1);
     Synapse synapse1(1, 8, -0.2, 1);
@@ -318,4 +348,189 @@ TEST(OutputTests, OutputTests_FinalBoss) {
     ASSERT_EQ(genome.getOutput(input), expectedOutput);
 }
 
-// Mutation tests
+TEST(OutputTests, OutputTests_FinalBossMultiQuery) {
+    Genome genome(4,1);
+    Synapse synapse1(1, 8, -0.2, 1);
+    Synapse synapse2(1, 6, 1.4, 2);
+    Synapse synapse3(1, 7, 1, 3);
+    Synapse synapse4(2, 6, -1, 4);
+    Synapse synapse5(2, 9, -0.1, 5);
+    Synapse synapse6(4, 10, -3, 6);
+    Synapse synapse7(6, 8, -1, 7);
+    Synapse synapse8(6, 5, 0.2, 8);
+    Synapse synapse9(6, 9, 0.4, 9);
+    Synapse synapse10(7, 9, -0.2, 10);
+    Synapse synapse11(7, 10, 1, 11);
+    Synapse synapse12(8, 5, 100, 12);
+    Synapse synapse13(9, 5, -1, 13);
+    Synapse synapse14(10, 5, 1, 14);
+
+    genome.addConnection(synapse1);
+    genome.addConnection(synapse2);
+    genome.addConnection(synapse3);
+    genome.addConnection(synapse4);
+    genome.addConnection(synapse5);
+    genome.addConnection(synapse6);
+    genome.addConnection(synapse7);
+    genome.addConnection(synapse8);
+    genome.addConnection(synapse9);
+    genome.addConnection(synapse10);
+    genome.addConnection(synapse11);
+    genome.addConnection(synapse12);
+    genome.addConnection(synapse13);
+    genome.addConnection(synapse14);
+    genome.runInferNetwork();
+
+    std::vector<double> input1;
+    input1.push_back(5);
+    input1.push_back(2);
+    input1.push_back(100);
+    input1.push_back(1);
+    ;
+    std::vector<double> input2;
+    input2.push_back(5);
+    input2.push_back(10);
+    input2.push_back(100);
+    input2.push_back(1);
+
+    std::vector<double> expectedOutput;
+    expectedOutput.push_back(2.2);
+
+    ASSERT_EQ(genome.getOutput(input1), expectedOutput);
+    ASSERT_NE(genome.getOutput(input2), expectedOutput);
+}
+
+class CompareTests : public ::testing::Test {
+protected:
+    CompareTests() : first(3,1), second(3,1) {
+        Synapse synapse1(1, 4, 0.5, 1);
+        Synapse synapse2(2, 4, 0.1, 2);
+        synapse2.changeEnable();
+        Synapse synapse3(3,4,0.3,3);
+        Synapse synapse4(2,5,0.4,4);
+        Synapse synapse5(5,4,-1,5);
+        Synapse synapse6(1,5,1,8);
+        first.addConnection(synapse1);
+        first.addConnection(synapse5);
+        first.addConnection(synapse2);
+        first.addConnection(synapse6);
+        first.addConnection(synapse3);
+        first.addConnection(synapse4);
+
+
+        Synapse otherSynapse1(1, 4, -0.5, 1);
+        Synapse otherSynapse2(2, 4, -0.1, 2);
+        otherSynapse2.changeEnable();
+        Synapse otherSynapse3(3,4,-0.3,3);
+        Synapse otherSynapse4(2,5,-0.4,4);
+        Synapse otherSynapse5(5,4,-2,5);
+        Synapse otherSynapse6(5,6,1.7,6);
+        Synapse otherSynapse7(6,4,-1.3,7);
+        Synapse otherSynapse8(3,5,-0.2,9);
+        Synapse otherSynapse9(1,6,-1.3,10);
+        second.addConnection(otherSynapse1);
+        second.addConnection(otherSynapse2);
+        second.addConnection(otherSynapse3);
+        second.addConnection(otherSynapse4);
+        second.addConnection(otherSynapse5);
+        second.addConnection(otherSynapse6);
+        second.addConnection(otherSynapse7);
+        second.addConnection(otherSynapse8);
+        second.addConnection(otherSynapse9);
+    }
+
+    Genome first;
+    Genome second;
+};
+
+TEST_F(CompareTests, CompareTests_CorrectComparison) {
+    auto result = round(first.compareSimilarity(second)*1000);
+    ASSERT_EQ(result, 844);
+}
+
+TEST_F(CompareTests, CompareTests_Commutativity) {
+    auto result1 = first.compareSimilarity(second);
+    auto result2 = second.compareSimilarity(first);
+
+    ASSERT_EQ(result1, result2);
+}
+
+TEST_F(CompareTests, CompareTests_SimilarToItself) {
+    auto result = first.compareSimilarity(first);
+    ASSERT_EQ(result, 0);
+}
+
+TEST(TopSortTests, TopSortTests_Simple) {
+    Genome genome(3,1);
+    Synapse synapse1(1, 4, 0.5, 1);
+    Synapse synapse2(2, 4, 0.1, 2);
+    synapse2.changeEnable();
+    Synapse synapse3(3,4,0.3,3);
+    Synapse synapse4(2,5,0.4,4);
+    Synapse synapse5(5,4,-1,5);
+    Synapse synapse6(1,5,1,8);
+    genome.addConnection(synapse1);
+    genome.addConnection(synapse5);
+    genome.addConnection(synapse2);
+    genome.addConnection(synapse6);
+    genome.addConnection(synapse3);
+    genome.addConnection(synapse4);
+
+    genome.runInferNetwork();
+
+    std::vector<int> expectedOutput;
+    expectedOutput.push_back(2);
+    expectedOutput.push_back(1);
+    expectedOutput.push_back(3);
+    expectedOutput.push_back(5);
+    expectedOutput.push_back(4);
+
+    ASSERT_EQ(genome.runTopSort(), expectedOutput);
+}
+
+TEST(TopSortTests, TopSortTests_Hard) {
+    Genome genome(4,1);
+    Synapse synapse1(1, 8, -0.2, 1);
+    Synapse synapse2(1, 6, 1.4, 2);
+    Synapse synapse3(1, 7, 1, 3);
+    Synapse synapse4(2, 6, -1, 4);
+    Synapse synapse5(2, 9, -0.1, 5);
+    Synapse synapse6(4, 10, -3, 6);
+    Synapse synapse7(6, 8, -1, 7);
+    Synapse synapse8(6, 5, 0.2, 8);
+    Synapse synapse9(6, 9, 0.4, 9);
+    Synapse synapse10(7, 9, -0.2, 10);
+    Synapse synapse11(7, 10, 1, 11);
+    Synapse synapse12(8, 5, 100, 12);
+    Synapse synapse13(9, 5, -1, 13);
+    Synapse synapse14(10, 5, 1, 14);
+
+    genome.addConnection(synapse1);
+    genome.addConnection(synapse2);
+    genome.addConnection(synapse3);
+    genome.addConnection(synapse4);
+    genome.addConnection(synapse5);
+    genome.addConnection(synapse6);
+    genome.addConnection(synapse7);
+    genome.addConnection(synapse8);
+    genome.addConnection(synapse9);
+    genome.addConnection(synapse10);
+    genome.addConnection(synapse11);
+    genome.addConnection(synapse12);
+    genome.addConnection(synapse13);
+    genome.addConnection(synapse14);
+    genome.runInferNetwork();
+
+    std::vector<int> expectedOutput;
+    expectedOutput.push_back(1);
+    expectedOutput.push_back(2);
+    expectedOutput.push_back(7);
+    expectedOutput.push_back(4);
+    expectedOutput.push_back(6);
+    expectedOutput.push_back(10);
+    expectedOutput.push_back(9);
+    expectedOutput.push_back(8);
+    expectedOutput.push_back(5);
+
+    ASSERT_EQ(genome.runTopSort(), expectedOutput);
+}
