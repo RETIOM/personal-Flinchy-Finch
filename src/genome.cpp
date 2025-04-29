@@ -3,6 +3,7 @@
 //
 #include "../include/genome.h"
 #include <random>
+#include "../include/utils.h"
 
 #include <iostream>
 
@@ -43,14 +44,14 @@ Genome::Genome(Genome &fitterParent, Genome &otherParent) {
         // Matching pair(handle mutateEnabled)
         if (fitGenes[i].historicalNumber == otherGenes[j].historicalNumber) {
             // Choose random version
-            if (static_cast<int>(getRandom(0,2)) == 1)
+            if (static_cast<int>(utils::getRandom(0,2)) == 1)
                 connectionGenes.push_back(fitGenes[i]);
             else connectionGenes.push_back(otherGenes[j]);
 
             // Handle mutation("if disabled in either parent, 75% it is disabled")
             if (!fitGenes[i].isEnabled || !otherGenes[j].isEnabled) {
                 constexpr double probMutDis = 0.75;
-                if (getRandom(0,1) < probMutDis) {connectionGenes.back().disable();}
+                if (utils::getRandom(0,1) < probMutDis) {connectionGenes.back().disable();}
             }
             i++; j++;
         }
@@ -76,15 +77,6 @@ Genome::Genome(Genome &fitterParent, Genome &otherParent) {
     inferNetwork();
 }
 
-
-
-double Genome::getRandom(const float min, const float max) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(min, max);
-
-    return dis(gen);
-}
 
 std::vector<double> Genome::getOutput(const std::vector<double> &input) {
     setInputs(input);
@@ -164,24 +156,24 @@ double Genome::compareSimilarity(Genome &genome) {
 void Genome::mutateWeight() {
     constexpr double perturbeOverRandom = 0.9;
 
-    if (getRandom(0, 1) < perturbeOverRandom) {
+    if (utils::getRandom(0, 1) < perturbeOverRandom) {
         perturbeWeight();
     }
     else randomWeight();
 }
 
 void Genome::randomWeight() {
-    const auto id = static_cast<int>(getRandom(0,connectionGenes.size()));
-    connectionGenes[id].changeWeight(getRandom());
+    const auto id = static_cast<int>(utils::getRandom(0,connectionGenes.size()));
+    connectionGenes[id].changeWeight(utils::getRandom());
 }
 
 void Genome::perturbeWeight() {
-    const auto id = static_cast<int>(getRandom(0,connectionGenes.size()));
-    connectionGenes[id].perturbeWeight(getRandom(0,2));
+    const auto id = static_cast<int>(utils::getRandom(0,connectionGenes.size()));
+    connectionGenes[id].perturbeWeight(utils::getRandom(0,2));
 }
 
 void Genome::mutateNode() {
-    const auto synapseId = static_cast<int>(getRandom(0,connectionGenes.size()));
+    const auto synapseId = static_cast<int>(utils::getRandom(0,connectionGenes.size()));
 
     // Give up if connection is disabled
     if (!connectionGenes[synapseId].isEnabled) {return;}
@@ -207,8 +199,8 @@ void Genome::setupNewNode(int start, int end, double weight) {
 void Genome::mutateConnection() {
     const auto nodes = topSort();
 
-    const int startNodeId = static_cast<int>(getRandom(0,nodes.size()-ONodes));
-    const int endNodeId = static_cast<int>(getRandom(std::max(INodes, startNodeId),nodes.size()-ONodes));
+    const int startNodeId = static_cast<int>(utils::getRandom(0,nodes.size()-ONodes));
+    const int endNodeId = static_cast<int>(utils::getRandom(std::max(INodes, startNodeId),nodes.size()-ONodes));
 
     // Check if mutation already exists
     if (synapseMap.contains(std::pair(nodes[startNodeId], nodes[endNodeId]))) {
@@ -219,12 +211,12 @@ void Genome::mutateConnection() {
             if (synapse.historicalNumber == historicalNumber) {synapse.enable(); return;}
         }
         // If it doesn't add with old historicalNumber
-        connectionGenes.emplace_back(nodes[startNodeId], nodes[endNodeId], getRandom(), historicalNumber);
+        connectionGenes.emplace_back(nodes[startNodeId], nodes[endNodeId], utils::getRandom(), historicalNumber);
     }
     // It's a new mutation:
     else {
         const auto historicalNumber = getInnovation();
-        connectionGenes.emplace_back(nodes[startNodeId], nodes[endNodeId], getRandom(), historicalNumber);
+        connectionGenes.emplace_back(nodes[startNodeId], nodes[endNodeId], utils::getRandom(), historicalNumber);
         synapseMap[std::pair(nodes[startNodeId], nodes[endNodeId])] = historicalNumber;
     }
 }
@@ -234,9 +226,9 @@ void Genome::mutate() {
     constexpr double probMutConn = 0.05;
     constexpr double probMutNode = 0.03;
 
-    if (getRandom(0,1) < probMutWeight) mutateWeight();
-    if (getRandom(0,1) < probMutConn) mutateConnection();
-    if (getRandom(0,1) < probMutNode) mutateNode();
+    if (utils::getRandom(0,1) < probMutWeight) mutateWeight();
+    if (utils::getRandom(0,1) < probMutConn) mutateConnection();
+    if (utils::getRandom(0,1) < probMutNode) mutateNode();
 }
 
 // Thought-up implementation, normally it's DFS(postorder)

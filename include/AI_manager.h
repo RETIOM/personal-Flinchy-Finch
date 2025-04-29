@@ -19,6 +19,8 @@ public:
     void draw() override;
     void reset() override;
 private:
+    const int maxPlayers = 150;
+
     std::vector<AIPlayer> players;
     sf::RenderWindow &_window;
     sf::Texture &_birdtexture;

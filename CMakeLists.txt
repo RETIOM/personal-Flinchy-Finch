@@ -26,6 +26,8 @@ add_library(flinchy_core
         src/node.cpp
         src/AI_player.cpp
         src/AI_manager.cpp
+        include/utils.h
+        src/utils.cpp
 )
 
 target_include_directories(flinchy_core PUBLIC include)

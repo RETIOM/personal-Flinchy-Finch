@@ -61,17 +61,25 @@ void AIManager::reset() {
         for (auto& organism : species) {
             organism->fitnessScore /= totalFitness;
         }
-        std::ranges::sort(species);
+        std::ranges::sort(species); // Create a comparision function for fitnessScore
     }
+
+    // Start creating new generation
+    int counter = 0;
 
     // Move fittest
     for (auto& [num, species] : speciesMap) {
         if (species.size() > 5) {
             newPlayers.emplace_back(*species[0], _birdtexture);
+            counter++;
         }
     }
 
-    // Move without breeding
+    while (counter < maxPlayers) {
+
+    }
+    // Move without breeding(just mutation) (for i in range 0.25maxPlayers) choose
+    // Or make it a probability game :) <- better cause I can merge into one function
 
     // Breed(with a chance of interSpecies)
 }

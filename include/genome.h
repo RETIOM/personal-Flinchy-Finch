@@ -32,7 +32,6 @@ public:
     // Computing network
     std::vector<double> getOutput(const std::vector<double> &input);
 
-    static double getRandom(float min = -2.0, float max = 2.0);
     inline static int innovationNumber = 1;
     static int getInnovation() {return innovationNumber++;};
 
