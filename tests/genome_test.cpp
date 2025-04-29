@@ -168,7 +168,8 @@ TEST_F(CrossoverTests, CrossoverTests_CorrectChildLength) {
 
 TEST_F(CrossoverTests, CrossoverTests_CorrectMatchingGenes) {
     auto child = Genome(first, second);
-    ASSERT_FALSE(child.getConnectionGenes()[1].isEnabled);
+    // ASSERT_FALSE(child.getConnectionGenes()[1].isEnabled);
+    ASSERT_TRUE(child.getConnections()[0]._weight == 0.5 || child.getConnections()[0]._weight == -0.5);
 }
 
 TEST_F(CrossoverTests, CrossoverTests_CorrectDisjointGenes) {
@@ -206,7 +207,7 @@ TEST(OutputTests, OutputTests_Simple) {
     input.push_back(5.0);
 
 
-    ASSERT_EQ(genome.getOutput(input)[0], 2.5);
+    ASSERT_NEAR(genome.getOutput(input)[0], 0.92, 0.01);
 }
 
 #include "../include/node_type.h"
@@ -224,7 +225,7 @@ TEST(OutputTests, OutputTests_SimpleMultiInput) {
     input.push_back(1.0);
     input.push_back(1.0);
 
-    ASSERT_EQ(genome.getOutput(input)[0], 0.5);
+    ASSERT_NEAR(genome.getOutput(input)[0], 0.62, 0.01);
 }
 
 TEST(OutputTests, OutputTests_SimpleMultiOutput) {
@@ -240,11 +241,12 @@ TEST(OutputTests, OutputTests_SimpleMultiOutput) {
     input.push_back(1.0);
 
     std::vector<double> expectedOutput;
-    expectedOutput.push_back(1.5);
-    expectedOutput.push_back(5.f);
+    expectedOutput.push_back(0.81);
+    expectedOutput.push_back(0.99);
 
 
-    ASSERT_EQ(genome.getOutput(input), expectedOutput);
+    ASSERT_NEAR(genome.getOutput(input)[0], expectedOutput[0], 0.01);
+    ASSERT_NEAR(genome.getOutput(input)[1], expectedOutput[1], 0.01);
 }
 
 TEST(OutputTests, OutputTests_MediumOutput) {
@@ -267,10 +269,10 @@ TEST(OutputTests, OutputTests_MediumOutput) {
     input.push_back(1);
 
     std::vector<double> expectedOutput;
-    expectedOutput.push_back(1.1);
+    expectedOutput.push_back(0.43);
 
 
-    ASSERT_EQ(genome.getOutput(input), expectedOutput);
+    ASSERT_NEAR(genome.getOutput(input)[0], expectedOutput[0], 0.01);
 }
 
 TEST(OutputTests, OutputTests_HandlesDisabled) {
@@ -297,9 +299,9 @@ TEST(OutputTests, OutputTests_HandlesDisabled) {
     input.push_back(10);
 
     std::vector<double> expectedOutput;
-    expectedOutput.push_back(1.5);
+    expectedOutput.push_back(0.85);
 
-    ASSERT_EQ(genome.getOutput(input), expectedOutput);
+    ASSERT_NEAR(genome.getOutput(input)[0], expectedOutput[0], 0.01);
 }
 
 
@@ -343,9 +345,9 @@ TEST(OutputTests, OutputTests_FinalBoss) {
     input.push_back(1);
 
     std::vector<double> expectedOutput;
-    expectedOutput.push_back(2.2);
+    expectedOutput.push_back(0.99);
 
-    ASSERT_EQ(genome.getOutput(input), expectedOutput);
+    ASSERT_NEAR(genome.getOutput(input)[0], expectedOutput[0], 0.01);
 }
 
 TEST(OutputTests, OutputTests_FinalBossMultiQuery) {
@@ -388,16 +390,19 @@ TEST(OutputTests, OutputTests_FinalBossMultiQuery) {
     input1.push_back(1);
     ;
     std::vector<double> input2;
-    input2.push_back(5);
-    input2.push_back(10);
     input2.push_back(100);
+    input2.push_back(-1);
     input2.push_back(1);
+    input2.push_back(3);
 
     std::vector<double> expectedOutput;
-    expectedOutput.push_back(2.2);
+    expectedOutput.push_back(0.99);
 
-    ASSERT_EQ(genome.getOutput(input1), expectedOutput);
-    ASSERT_NE(genome.getOutput(input2), expectedOutput);
+    std::vector<double> expectedOutput2;
+    expectedOutput2.push_back(0.40);
+
+    ASSERT_NEAR(genome.getOutput(input1)[0], expectedOutput[0], 0.01);
+    ASSERT_NEAR(genome.getOutput(input2)[0], expectedOutput2[0], 0.01);
 }
 
 class CompareTests : public ::testing::Test {

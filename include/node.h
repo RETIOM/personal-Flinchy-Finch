@@ -58,10 +58,8 @@ private:
 
     int _nodeNumber;
 
-    // static double activationFunction(double interimOutput) {return 1.0 / (1.0 + std::exp(-interimOutput));};
+    static double activationFunction(double interimOutput) {return 1.0 / (1.0 + std::exp(-interimOutput));};
 
-    // reLU for testing
-    static double activationFunction(const double interimOutput) {return std::max(0.0, interimOutput);}
 
 };
 
