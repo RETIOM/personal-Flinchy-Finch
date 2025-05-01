@@ -6,6 +6,7 @@
 <img src="assets/ai-mode-demo.gif" alt="AI Mode Demo"/>
 </p>
 
+_First few generations in HARD mode_
 
 
 ## 🤔 What's in a Name? "Flinchy Finch"
