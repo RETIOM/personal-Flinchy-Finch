@@ -182,6 +182,17 @@ TEST_F(CrossoverTests, CrossoverTests_CorrectExcessGenes) {
     ASSERT_EQ(child.getConnections().size(), 9);
 }
 
+TEST(OutputTests, OutputTests_HandlesEmpty) {
+    Genome genome(2,1);
+    genome.runInferNetwork();
+
+    std::vector<double> input;
+    input.push_back(1);
+    input.push_back(2);
+
+    ASSERT_EQ(genome.getOutput(input)[0], 0);
+}
+
 
 TEST(OutputTests, OutputTests_CorrectInputs) {
     Genome genome(1,1);
@@ -465,6 +476,14 @@ TEST_F(CompareTests, CompareTests_SimilarToItself) {
     ASSERT_EQ(result, 0);
 }
 
+TEST_F(CompareTests, CompareTests_NewSimilarToNew) {
+    Genome genome1(5,1);
+    Genome genome2(5,1);
+    auto result = genome1.compareSimilarity(genome2);
+
+    ASSERT_EQ(result, 0);
+}
+
 TEST(TopSortTests, TopSortTests_Simple) {
     Genome genome(3,1);
     Synapse synapse1(1, 4, 0.5, 1);
@@ -484,9 +503,9 @@ TEST(TopSortTests, TopSortTests_Simple) {
     genome.runInferNetwork();
 
     std::vector<int> expectedOutput;
+    expectedOutput.push_back(3);
     expectedOutput.push_back(2);
     expectedOutput.push_back(1);
-    expectedOutput.push_back(3);
     expectedOutput.push_back(5);
     expectedOutput.push_back(4);
 
@@ -527,10 +546,11 @@ TEST(TopSortTests, TopSortTests_Hard) {
     genome.runInferNetwork();
 
     std::vector<int> expectedOutput;
-    expectedOutput.push_back(1);
-    expectedOutput.push_back(2);
-    expectedOutput.push_back(7);
     expectedOutput.push_back(4);
+    expectedOutput.push_back(3);
+    expectedOutput.push_back(2);
+    expectedOutput.push_back(1);
+    expectedOutput.push_back(7);
     expectedOutput.push_back(6);
     expectedOutput.push_back(10);
     expectedOutput.push_back(9);

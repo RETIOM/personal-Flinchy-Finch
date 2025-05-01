@@ -8,6 +8,7 @@
 #include "mode.h"
 #include "agent_manager.h"
 #include "player_manager.h"
+#include "AI_manager.h"
 #include "pipe_manager.h"
 #include "ground.h"
 #include <SFML/Graphics.hpp>
@@ -24,7 +25,7 @@ public:
 private:
     void updateScore();
 
-    float velocity = 100.f;
+    float velocity = 250.f;
     int score = 0;
     int previousScore = 0;
     bool isDone = false;

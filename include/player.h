@@ -19,6 +19,7 @@ public:
     void draw() const;
     void reset();
     bool alive() const {return isAlive;};
+
 protected:
     void checkCollision();
 
@@ -33,6 +34,8 @@ protected:
     float gravity = -1500.0f;
     float jumpSpeed = -400.f;
     float rotation = 200.0f;
+
+    const float maxSpeed = 1500.0f;
 
     bool hasJumped = false;
 

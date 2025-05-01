@@ -4,6 +4,8 @@
 
 #include "../include/game.h"
 
+#include <iostream>
+
 Game::Game(Difficulty difficulty, Mode mode, sf::RenderWindow &window) :
 groundTexture("./assets/ground.png"),
 bgTexture("./assets/bg.png"),
@@ -38,8 +40,8 @@ font("./assets/PressStart2P-Regular.ttf"), scoreText(font) {
         case Mode::MANUAL:
             players = new PlayerManager(pipes, window, birdTexture);
             break;
-        // case Mode::AI:
-        //     players = new AIManager(pipes, window, birdTexture, maxPlayers);
+        case Mode::AI:
+            players = new AIManager(pipes, window, birdTexture, 150, font);
     }
 
     velocity = _window.getSize().y / 6;

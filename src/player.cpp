@@ -56,7 +56,7 @@ void Player::update(float deltaTime) {
         angle = std::min(sf::degrees(90), angle + sf::degrees(rotation) * deltaTime);
     }
 
-    ySpeed -= gravity * deltaTime;
+    if (std::abs(ySpeed) < maxSpeed) ySpeed -= gravity * deltaTime;
 
     body.move(movement);
 
@@ -86,6 +86,7 @@ void Player::checkCollision() {
     auto birdBottom = birdPosition.y + (size.y / 2);
     auto birdRight = birdPosition.x + (size.x / 2);
 
+    // std::cout<<topPipeHitbox.position.x<<std::endl;
 
     if (hitbox.findIntersection(topPipeHitbox) || hitbox.findIntersection(bottomPipeHitbox)) {
         isAlive = false;
@@ -93,7 +94,7 @@ void Player::checkCollision() {
     else if (birdBottom >= _window.getSize().y-112.f) {
         isAlive = false;
     }
-    else if (birdBottom <= 0 && birdRight >= topPipeHitbox.position.x - topPipeHitbox.size.x/2) {
+    else if (birdBottom <= 0 && birdRight >= topPipeHitbox.position.x) {
         isAlive = false;
     }
     if (!isAlive) {body.setColor(sf::Color::Red);}

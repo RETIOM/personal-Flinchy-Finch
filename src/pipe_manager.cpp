@@ -9,7 +9,7 @@
 PipeManager::PipeManager(sf::RenderWindow &window, sf::Texture &topPipeTexture, sf::Texture &bottomPipeTexture, int &score) : _window(window), _topPipeTexture(topPipeTexture), _bottomPipeTexture(bottomPipeTexture), _score(score) {
     pipes.emplace_back(_window, _topPipeTexture, _bottomPipeTexture, _score);
 
-    pipeHorizontalDistance = _window.getSize().x * 0.25f;
+    pipeHorizontalDistance = _window.getSize().x * 0.4f;
 }
 
 void PipeManager::update(float deltaTime, float velocity) {

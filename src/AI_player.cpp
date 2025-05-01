@@ -11,10 +11,11 @@ void AIPlayer::update(float deltaTime) {
     fitnessScore += deltaTime;
     sf::Vector2f movement(0.0f, 0.0f);
 
-    bool networkJump;
+    bool networkJump = false;
     // Output will be a vector with one value(since one output)
-    genome.getOutput(prepareInputs())[0] > 0 ? networkJump = true : networkJump = false;
-    if (networkJump && !hasJumped) {
+    genome.getOutput(prepareInputs())[0] > 0.5 ? networkJump = true : networkJump = false;
+    // std::cout<<prepareInputs()[4]<<std::endl;
+    if (networkJump) {
         ySpeed = jumpSpeed;
     }
     hasJumped = networkJump;
@@ -27,7 +28,7 @@ void AIPlayer::update(float deltaTime) {
         angle = std::min(sf::degrees(90), angle + sf::degrees(rotation) * deltaTime);
     }
 
-    ySpeed -= gravity * deltaTime;
+    if (std::abs(ySpeed) < maxSpeed) ySpeed -= gravity * deltaTime;
 
     body.move(movement);
 
@@ -45,11 +46,11 @@ std::vector<double> AIPlayer::prepareInputs() const {
     auto agentPosition = body.getPosition();
     Pipe& nextPipe = _pipes.nextPipe();
 
-    inputs.push_back(_window.getSize().y - agentPosition.y-112.f); // Distance from ground
-    inputs.push_back(nextPipe.getFrontPosition() - agentPosition.x); // Distance from pipe
-    inputs.push_back(nextPipe.getTopYPosition() - agentPosition.y); // Distance from top of hole
-    inputs.push_back(nextPipe.getBottomYPosition() - agentPosition.y); // Distance from bottom of pipe
-    inputs.push_back(ySpeed); // Vertical velocity
+    // inputs.push_back((_window.getSize().y - agentPosition.y-112.f)/_window.getSize().y); // Distance from ground
+    inputs.push_back((nextPipe.getFrontPosition() - agentPosition.x)/_window.getSize().x); // Distance from pipe
+    inputs.push_back((nextPipe.getTopYPosition() - agentPosition.y)/_window.getSize().y); // Distance from top of hole
+    inputs.push_back((agentPosition.y - nextPipe.getBottomYPosition() )/_window.getSize().y); // Distance from bottom of pipe
+    // inputs.push_back(ySpeed/maxSpeed); // Vertical velocity
 
     return inputs;
 }

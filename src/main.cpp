@@ -10,8 +10,8 @@
 
 int main()
 {
-    auto display_width = 1280u;
-    auto display_height = 720u;
+    auto display_width = 400u;
+    auto display_height = 600u;
 
     auto window = sf::RenderWindow(sf::VideoMode({display_width, display_height}), "Flinchy Finch(TM)",
         sf::Style::Default, sf::State::Windowed);
@@ -33,8 +33,8 @@ int main()
 
 
     // Set manually
-    auto difficulty = Difficulty::HARD;
-    auto mode = Mode::MANUAL;
+    auto difficulty = Difficulty::EASY;
+    auto mode = Mode::AI;
 
     Game game(difficulty, mode, window);
 
@@ -69,11 +69,6 @@ int main()
 
         if (mode == Mode::MANUAL && game.getIsDone()) {
             state = GameState::READY;
-        }
-
-        if (mode == Mode::AI && game.getIsDone()) {
-            game.reset();
-            state = GameState::RUNNING;
         }
 
 

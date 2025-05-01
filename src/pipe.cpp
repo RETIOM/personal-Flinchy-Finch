@@ -17,7 +17,7 @@ Pipe::Pipe(sf::RenderWindow &window, sf::Texture &topTexture, sf::Texture &botto
     topPipe.setScale(sf::Vector2f(scale, scale));
     bottomPipe.setScale(sf::Vector2f(scale, scale));
 
-    pipeDistance = 25*(_window.getSize().y - 112.f) / 100;
+    pipeDistance = 30*(_window.getSize().y - 112.f) / 100;
 
     const int pipePosition = generatePipePosition();
 

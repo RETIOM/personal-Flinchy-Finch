@@ -14,6 +14,7 @@
 #include <deque>
 #include <memory>
 #include <algorithm>
+#include <utility>
 
 /* this holds the agents genome: node and connection(synapse) genes as ?vectors?
  * it needs a (public) getOutput method which will calculate the NN output
@@ -64,6 +65,8 @@ public:
     void setupNewNode(int start, int end, double weight);
 
     double compareSimilarity(Genome& genome);
+
+    void runMutate() {mutate();};
 
     // Functions for testing
     void addConnection(Synapse& synapse) {connectionGenes.push_back(synapse);};

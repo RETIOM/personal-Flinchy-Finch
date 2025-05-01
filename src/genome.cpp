@@ -83,6 +83,7 @@ std::vector<double> Genome::getOutput(const std::vector<double> &input) {
     std::vector<double> output;
     for (const auto& nodeGene : outputNodes) {
         output.push_back(nodeGene->getOutput());
+        // output.push_back(1);
     }
     resetNetwork();
     return output;
@@ -125,10 +126,16 @@ double Genome::compareSimilarity(Genome &genome) {
     const auto selfGenome = getConnectionGenes();
     const auto otherGenome = genome.getConnectionGenes();
 
-    const auto N = static_cast<int>(std::max(selfGenome.size(), otherGenome.size()));
+
+
+    // Genomes without connections are always the same(edge case)
+    if (selfGenome.size() == 0 && otherGenome.size() == 0) {return 0;}
 
     int excess = 0, disjoint = 0, equal = 0;
     double weightDifference = 0.0;
+
+
+    const auto N = static_cast<int>(std::max(selfGenome.size(), otherGenome.size()));
 
     int i = 0, j = 0;
 
@@ -146,7 +153,13 @@ double Genome::compareSimilarity(Genome &genome) {
     while (i < selfGenome.size()) {excess++; i++;};
     while (j < otherGenome.size()) {excess++; j++;}
 
-    return c1*excess/N+c1*disjoint/N+c3*weightDifference/equal;
+    auto output = c1*excess/N+c2*disjoint/N;
+
+    if (std::min(selfGenome.size(), otherGenome.size()) > 0) {
+        output += c3*weightDifference/equal;
+    }
+
+    return output;
 }
 
 
@@ -197,38 +210,46 @@ void Genome::setupNewNode(int start, int end, double weight) {
 }
 
 void Genome::mutateConnection() {
-    const auto nodes = topSort();
+    auto sortedNodes = topSort();
 
-    const int startNodeId = static_cast<int>(utils::getRandom(0,nodes.size()-ONodes));
-    const int endNodeId = static_cast<int>(utils::getRandom(std::max(INodes, startNodeId),nodes.size()-ONodes));
+    const int startNodeId = std::round(utils::getRandom(0,sortedNodes.size()-ONodes-1));
+    const int endNodeId = std::round(utils::getRandom(std::max(INodes, startNodeId+1),sortedNodes.size()-1));
 
+    auto newPair = std::make_pair(sortedNodes[startNodeId], sortedNodes[endNodeId]);
     // Check if mutation already exists
-    if (synapseMap.contains(std::pair(nodes[startNodeId], nodes[endNodeId]))) {
+    if (synapseMap.contains(newPair)) {
         // Check if genome has mutation
-        const int historicalNumber = synapseMap[std::pair(nodes[startNodeId], nodes[endNodeId])];
+        // std::cout<<"EXISTS"<<std::endl;
+        const int historicalNumber = synapseMap[std::pair(sortedNodes[startNodeId], sortedNodes[endNodeId])];
         for (auto &synapse : connectionGenes) {
             // If exists, enable and give up on adding
             if (synapse.historicalNumber == historicalNumber) {synapse.enable(); return;}
         }
         // If it doesn't add with old historicalNumber
-        connectionGenes.emplace_back(nodes[startNodeId], nodes[endNodeId], utils::getRandom(), historicalNumber);
+        connectionGenes.emplace_back(sortedNodes[startNodeId], sortedNodes[endNodeId], utils::getRandom(), historicalNumber);
     }
     // It's a new mutation:
     else {
         const auto historicalNumber = getInnovation();
-        connectionGenes.emplace_back(nodes[startNodeId], nodes[endNodeId], utils::getRandom(), historicalNumber);
-        synapseMap[std::pair(nodes[startNodeId], nodes[endNodeId])] = historicalNumber;
+        connectionGenes.emplace_back(sortedNodes[startNodeId], sortedNodes[endNodeId], utils::getRandom(), historicalNumber);
+        synapseMap[std::pair(sortedNodes[startNodeId], sortedNodes[endNodeId])] = historicalNumber;
     }
 }
 
 void Genome::mutate() {
     constexpr double probMutWeight = 0.8;
-    constexpr double probMutConn = 0.05;
-    constexpr double probMutNode = 0.03;
+    constexpr double probMutConn = 0.05; // 0.05
+    constexpr double probMutNode = 0.03; // 0.03
 
-    if (utils::getRandom(0,1) < probMutWeight) mutateWeight();
+    // std::cout<<"CONNECTIONS:"<<connectionGenes.size()<<std::endl;
+
+    if (connectionGenes.size() > 0) {
+        if (utils::getRandom(0,1) < probMutNode) mutateNode();
+        if (utils::getRandom(0,1) < probMutWeight) mutateWeight();
+    }
+
     if (utils::getRandom(0,1) < probMutConn) mutateConnection();
-    if (utils::getRandom(0,1) < probMutNode) mutateNode();
+
 }
 
 // Thought-up implementation, normally it's DFS(postorder)
@@ -252,6 +273,11 @@ std::vector<int> Genome::topSort() {
             queue.push_back(previous);
             helper.push_back(previous->getNumber());
         }
+    }
+
+    // Make sure inputs are always included
+    for (int i = 1; i <= INodes; i++) {
+        helper.push_back(i);
     }
 
     // Create output vector
