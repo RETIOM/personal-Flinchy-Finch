@@ -1,6 +1,3 @@
-//
-// Created by tommeh on 17.04.25.
-//
 #include "../include/ground.h"
 
 #include <iostream>

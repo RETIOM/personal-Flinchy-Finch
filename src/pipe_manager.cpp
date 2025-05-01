@@ -1,6 +1,3 @@
-//
-// Created by tommeh on 18.04.25.
-//
 #include "../include/pipe_manager.h"
 
 #include <iostream>

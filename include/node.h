@@ -1,7 +1,3 @@
-//
-// Created by tommeh on 24.04.25.
-//
-
 #ifndef NODE_H
 #define NODE_H
 
@@ -11,19 +7,6 @@
 #include <memory>
 #include <cmath>
 
-/* Node will be made up of
- * Attributes:
- * - TYPE
- * - vector of input nodes and/or values
- * - vector of weights
- * - activation function
- * - output
- * - wasCalled bool
- * Methods:
- * - getOutput
-*/
-
-// generate owen random bias
 
 class Node {
 public:

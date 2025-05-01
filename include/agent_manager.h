@@ -1,7 +1,3 @@
-//
-// Created by tommeh on 24.04.25.
-//
-
 #ifndef AGENT_MANAGER_H
 #define AGENT_MANAGER_H
 #include <cstddef>

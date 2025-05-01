@@ -1,6 +1,3 @@
-//
-// Created by tommeh on 18.04.25.
-//
 
 #ifndef PIPE_CONTROLLER_H
 #define PIPE_CONTROLLER_H

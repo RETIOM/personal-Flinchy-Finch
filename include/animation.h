@@ -1,7 +1,3 @@
-//
-// Created by tommeh on 17.04.25.
-//
-
 #ifndef ANIMATION_H
 #define ANIMATION_H
 

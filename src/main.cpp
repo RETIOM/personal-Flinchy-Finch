@@ -6,8 +6,6 @@
 #include "../include/game_state.h"
 #include "../include/mode.h"
 
-
-
 int main()
 {
     auto display_width = 400u;
@@ -15,7 +13,6 @@ int main()
 
     auto window = sf::RenderWindow(sf::VideoMode({display_width, display_height}), "Flinchy Finch(TM)",
         sf::Style::Default, sf::State::Windowed);
-    // window.setFramerateLimit(144);
 
     // TODO:
     // + scale bird with resolution
@@ -34,7 +31,7 @@ int main()
 
     // Set manually
     auto difficulty = Difficulty::HARD;
-    auto mode = Mode::AI;
+    auto mode = Mode::MANUAL;
 
     Game game(difficulty, mode, window);
 

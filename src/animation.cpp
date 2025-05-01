@@ -1,7 +1,3 @@
-//
-// Created by tommeh on 17.04.25.
-//
-
 #include "../include/animation.h"
 
 Animation::Animation(sf::Texture &texture, sf::Vector2u imageCount, float switchTime) {

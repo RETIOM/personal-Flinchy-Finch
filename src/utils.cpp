@@ -1,6 +1,3 @@
-//
-// Created by tommeh on 29.04.25.
-//
 #include "../include/utils.h"
 #include <random>
 

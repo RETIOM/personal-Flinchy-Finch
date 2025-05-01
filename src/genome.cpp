@@ -1,6 +1,3 @@
-//
-// Created by tommeh on 24.04.25.
-//
 #include "../include/genome.h"
 #include <random>
 #include "../include/utils.h"

@@ -1,7 +1,3 @@
-//
-// Created by tommeh on 04.04.25.
-//
-
 #ifndef PLAYER_H
 #define PLAYER_H
 

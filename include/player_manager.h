@@ -1,7 +1,3 @@
-//
-// Created by tommeh on 20.04.25.
-//
-
 #ifndef PLAYER_MANAGER_H
 #define PLAYER_MANAGER_H
 

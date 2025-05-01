@@ -1,7 +1,3 @@
-//
-// Created by tommeh on 24.04.25.
-//
-
 #ifndef AI_MANAGER_H
 #define AI_MANAGER_H
 #include "agent_manager.h"

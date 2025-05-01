@@ -1,7 +1,3 @@
-//
-// Created by tommeh on 28.04.25.
-//
-
 #include "../include/AI_manager.h"
 #include <unordered_map>
 #include <memory>
