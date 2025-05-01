@@ -31,7 +31,7 @@ int main()
 
     // Set manually
     auto difficulty = Difficulty::HARD;
-    auto mode = Mode::MANUAL;
+    auto mode = Mode::AI;
 
     Game game(difficulty, mode, window);
 
