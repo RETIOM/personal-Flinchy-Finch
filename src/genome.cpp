@@ -83,13 +83,12 @@ std::vector<double> Genome::getOutput(const std::vector<double> &input) {
     std::vector<double> output;
     for (const auto& nodeGene : outputNodes) {
         output.push_back(nodeGene->getOutput());
-        // output.push_back(1);
     }
     resetNetwork();
     return output;
 }
 
-void Genome::setInputs(const std::vector<double> &input) {
+void Genome::setInputs(const std::vector<double> &input) const {
     for (int i = 0; i < inputNodes.size(); i++) {
         inputNodes[i]->setOutput(input[i]);
     }
@@ -195,8 +194,6 @@ void Genome::mutateNode() {
     const auto end = connectionGenes[synapseId]._end;
 
     const int newNodeNumber = getNodeNumber()+getIONodes();
-    // const auto newNode = std::make_shared<Node>(NodeType::HIDDEN, newNodeNumber);
-    // nodes[newNodeNumber] = newNode;
 
     setupNewNode(start, newNodeNumber, 1);
     setupNewNode(newNodeNumber, end, connectionGenes[synapseId]._weight);
@@ -219,7 +216,6 @@ void Genome::mutateConnection() {
     // Check if mutation already exists
     if (synapseMap.contains(newPair)) {
         // Check if genome has mutation
-        // std::cout<<"EXISTS"<<std::endl;
         const int historicalNumber = synapseMap[std::pair(sortedNodes[startNodeId], sortedNodes[endNodeId])];
         for (auto &synapse : connectionGenes) {
             // If exists, enable and give up on adding
@@ -238,10 +234,8 @@ void Genome::mutateConnection() {
 
 void Genome::mutate() {
     constexpr double probMutWeight = 0.8;
-    constexpr double probMutConn = 0.05; // 0.05
-    constexpr double probMutNode = 0.03; // 0.03
-
-    // std::cout<<"CONNECTIONS:"<<connectionGenes.size()<<std::endl;
+    constexpr double probMutConn = 0.05;
+    constexpr double probMutNode = 0.03;
 
     if (connectionGenes.size() > 0) {
         if (utils::getRandom(0,1) < probMutNode) mutateNode();
@@ -290,14 +284,3 @@ std::vector<int> Genome::topSort() {
 
     return result;
 }
-
-
-
-
-
-
-
-
-
-
-

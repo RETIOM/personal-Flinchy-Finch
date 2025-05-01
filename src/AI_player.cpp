@@ -8,17 +8,14 @@
 void AIPlayer::update(float deltaTime) {
     if (!isAlive) return;
 
-    fitnessScore += deltaTime;
+    fitnessScore += deltaTime*100;
     sf::Vector2f movement(0.0f, 0.0f);
 
-    bool networkJump = false;
-    // Output will be a vector with one value(since one output)
+    bool networkJump;
     genome.getOutput(prepareInputs())[0] > 0.5 ? networkJump = true : networkJump = false;
-    // std::cout<<prepareInputs()[4]<<std::endl;
     if (networkJump) {
         ySpeed = jumpSpeed;
     }
-    hasJumped = networkJump;
 
     movement.y += ySpeed * deltaTime;
 
@@ -31,7 +28,6 @@ void AIPlayer::update(float deltaTime) {
     if (std::abs(ySpeed) < maxSpeed) ySpeed -= gravity * deltaTime;
 
     body.move(movement);
-
 
     body.setRotation(angle);
 

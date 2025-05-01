@@ -27,13 +27,13 @@ int main()
     // + add and handle game states(startup, ready, running, paused)
     // + create abstract class AgentManager and put it above player&AIPlayer
     // + refactor Game object to work with AgentManager(store pointer to object)
-    // - create class Agents and its components(neuron, synapse, network)/(Genome, genome translation or smth)
+    // + create class Agents and its components(neuron, synapse, network)/(Genome, genome translation or smth)
     // - add menu(main(Play(also space), difficulty, mode, exit), restart(play, main menu, score(last, best))
     // - add central CONFIG file for all options(screen size, speeds, GENETIC PARAMS)
 
 
     // Set manually
-    auto difficulty = Difficulty::EASY;
+    auto difficulty = Difficulty::HARD;
     auto mode = Mode::AI;
 
     Game game(difficulty, mode, window);

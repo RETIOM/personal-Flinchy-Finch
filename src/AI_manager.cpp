@@ -27,7 +27,6 @@ void AIManager::update(float deltaTime) {
             playersAlive++;
         }
     }
-    // std::cout<<playersAlive<<std::endl;
 }
 
 void AIManager::draw() {
@@ -41,7 +40,7 @@ void AIManager::draw() {
             counter++;
         }
     }
-    // draw numSpecies, alive and generation
+    // TODO: draw numSpecies, alive and generation + fitnessScore
 }
 
 bool AIManager::compareFitness(AIPlayer* player1, AIPlayer* player2) {
@@ -50,15 +49,13 @@ bool AIManager::compareFitness(AIPlayer* player1, AIPlayer* player2) {
 
 
 std::unordered_map<int, std::vector<AIPlayer*>> AIManager::speciate() {
-    bool inserted;
     std::unordered_map<int, std::vector<AIPlayer*>> speciesMap;
 
 
     for (auto &player : players) {
-        inserted = false;
+        bool inserted = false;
 
         for (auto &[num, species] : speciesMap) {
-            // std::cout<<player.compareSimilarity(*species.front())<<std::endl;
             if (player.compareSimilarity(*species[0]) < similarityThreshold) {
                 speciesMap[num].push_back(&player);
                 inserted = true;
@@ -77,16 +74,38 @@ std::unordered_map<int, std::vector<AIPlayer*>> AIManager::speciate() {
     return speciesMap;
 }
 
-void AIManager::recalcuateFitness(std::unordered_map<int, std::vector<AIPlayer*>> &speciesMap) {
+void AIManager::recalculateFitness(std::unordered_map<int, std::vector<AIPlayer*>> &speciesMap) {
     for (auto& [num, species] : speciesMap) {
-        int totalFitness = 0;
         for (const auto& organism : species) {
-            totalFitness += organism->fitnessScore;
-        }
-        for (const auto& organism : species) {
-            organism->fitnessScore = organism->fitnessScore / totalFitness;
+            organism->fitnessScore /= species.size();
         }
     }
+}
+
+double AIManager::sumAdjustedFitness(std::vector<AIPlayer*>& players) {
+    double totalFitness = 0;
+    for (const auto& organism : players) {
+        totalFitness += organism->fitnessScore;
+    }
+    return totalFitness;
+}
+
+std::pair<std::vector<double>, std::vector<int>> AIManager::flattenSpecies(std::unordered_map<int, std::vector<AIPlayer*>>& speciesMap) {
+    std::vector<double> cumulativeAdjustedFitness;
+    std::vector<int> keys;
+
+    cumulativeAdjustedFitness.push_back(0);
+    keys.push_back(-1);
+
+    for (auto& [key, species] : speciesMap) {
+        keys.push_back(key);
+
+        //// Switch this to enable/disable innovation protection(also have to disable adjustFitness)
+        cumulativeAdjustedFitness.push_back(sumAdjustedFitness(species)+cumulativeAdjustedFitness.back());
+        // cumulativeAdjustedFitness.push_back(species[0]->fitnessScore+cumulativeAdjustedFitness.back());
+    }
+
+    return std::make_pair(cumulativeAdjustedFitness, keys);
 }
 
 
@@ -103,22 +122,19 @@ AIPlayer*& AIManager::chooseFromSpecies(std::vector<AIPlayer*>& species) {
     auto totalFitness = cumulativeFitness.back();
 
     auto randomValue = utils::getRandom(1, totalFitness);
-    // std::cout<<"TOTAL SIZE(EXP: < "<<totalFitness<<") :"<<randomValue<<std::endl;
-    //
+
     for (int i = 0; i < cumulativeFitness.size(); i++) {
         if (randomValue < cumulativeFitness[i]) {
-            // std::cout<<"FITNESS: "<<species[i-1]->fitnessScore<<std::endl;
-            return species[i-1];
+            return species[i-1]; // i-1 becauase lack of sentinel
         }
     }
     return species[0];
 }
 
-int AIManager::chooseSpecies(std::vector<std::size_t>& cumulativeSizes, std::vector<int>& keys) {
+int AIManager::chooseSpecies(std::vector<double>& cumulativeSizes, std::vector<int>& keys) {
     const auto totalSize = cumulativeSizes.back();
 
     const auto randomNumber = utils::getRandom(1, totalSize);
-    // std::cout<<"TOTAL SIZE(EXP: < "<<totalSize<<") :"<<randomNumber<<std::endl;
     for (int i = 1; i < cumulativeSizes.size(); i++) {
         if (randomNumber < cumulativeSizes[i]) {
             return keys[i];
@@ -130,23 +146,17 @@ int AIManager::chooseSpecies(std::vector<std::size_t>& cumulativeSizes, std::vec
 void AIManager::crossover(std::vector<AIPlayer>& newPlayers, std::unordered_map<int, std::vector<AIPlayer*>>& speciesMap, int number) {
     // Choose two players(higher fitness higher chance), remember to include a chance of interspecies
     const float infraSpeciesProb = 0.999;
-    // Flatten speciesMap(to allow for species selection); by size
-    std::vector<std::size_t> cumulativeSizes;
-    std::vector<int> keys;
 
-    cumulativeSizes.push_back(0);
-    keys.push_back(-1);
+    auto flattenedSpeciesMap = flattenSpecies(speciesMap);
 
-    for (auto& [key, species] : speciesMap) {
-        keys.push_back(key);
-        cumulativeSizes.push_back(species.size()+cumulativeSizes.back());
-    }
+    auto cumulativeFitness = flattenedSpeciesMap.first;
+    auto keys = flattenedSpeciesMap.second;
 
 
     for (int i = 0; i < number; i++) {
         if (utils::getRandom(0, 1) < infraSpeciesProb) {
             // Choose species
-            auto key = chooseSpecies(cumulativeSizes, keys);
+            auto key = chooseSpecies(cumulativeFitness, keys);
 
             // Choose from species
             auto player1 = chooseFromSpecies(speciesMap.at(key));
@@ -160,9 +170,9 @@ void AIManager::crossover(std::vector<AIPlayer>& newPlayers, std::unordered_map<
             }
         }
         else {
-            auto firstKey = chooseSpecies(cumulativeSizes, keys);
+            auto firstKey = chooseSpecies(cumulativeFitness, keys);
 
-            auto secondKey = chooseSpecies(cumulativeSizes, keys);
+            auto secondKey = chooseSpecies(cumulativeFitness, keys);
 
             auto player1 = chooseFromSpecies(speciesMap.at(firstKey));
             auto player2 = chooseFromSpecies(speciesMap.at(secondKey));
@@ -178,31 +188,29 @@ void AIManager::crossover(std::vector<AIPlayer>& newPlayers, std::unordered_map<
 }
 
 void AIManager::mutate(std::vector<AIPlayer>& newPlayers, std::unordered_map<int, std::vector<AIPlayer*>>& speciesMap, int number) {
-    std::vector<std::size_t> cumulativeSizes;
-    std::vector<int> keys;
+    auto flattenedSpeciesMap = flattenSpecies(speciesMap);
 
-    cumulativeSizes.push_back(0);
-    keys.push_back(-1);
-
-    for (auto& [key, species] : speciesMap) {
-        keys.push_back(key);
-        cumulativeSizes.push_back(species.size()+cumulativeSizes.back());
-    }
+    auto cumulativeFitness = flattenedSpeciesMap.first;
+    auto keys = flattenedSpeciesMap.second;
 
     for (int i = 0; i < number; i++) {
-        auto key = chooseSpecies(cumulativeSizes, keys);
+        auto key = chooseSpecies(cumulativeFitness, keys);
         auto player = chooseFromSpecies(speciesMap.at(key));
 
-        // newPlayers.emplace_back(*player, _birdtexture, true);
-        // std::cout<<player->fitnessScore<<std::endl;
-        newPlayers.emplace_back(*player, _birdtexture, false);
+        newPlayers.emplace_back(*player, _birdtexture, true);
     }
+}
+
+float AIManager::getMaxFitness(std::unordered_map<int, std::vector<AIPlayer *> > &speciesMap) {
+    float maxFitness = 0;
+    for (auto& [key, species] : speciesMap) {
+        if (species[0]->fitnessScore > maxFitness) maxFitness = species[0]->fitnessScore;
+    }
+    return maxFitness;
 }
 
 
 
-
-// Handles selection and breeding, consider helper functions(split into helpers perhaps)
 void AIManager::reset() {
     // Reset necessary values
     speciesCount = 0;
@@ -215,10 +223,13 @@ void AIManager::reset() {
 
     // Divide into species
     auto speciesMap = speciate();
-    // std::cout<<speciesMap.size()<<std::endl;
+    speciesCount = speciesMap.size();
+
+    // Provide information on last gen
+    printf("Generation %d: # of species %d; Max fitness score: %.2f\n", generation, speciesCount, getMaxFitness(speciesMap));
 
     // Recalculate fitness
-    recalcuateFitness(speciesMap);
+    recalculateFitness(speciesMap);
 
     // Fill new generation
     int counter = 0;
@@ -227,8 +238,6 @@ void AIManager::reset() {
     for (auto& [num, species] : speciesMap) {
         if (species.size() > 5) {
             newPlayers.emplace_back(*species[0], _birdtexture);
-            // std::cout<<species[0]->fitnessScore<<std::endl;
-            // std::cout<<species[149]->fitnessScore<<std::endl;
             counter++;
         }
     }
@@ -240,8 +249,6 @@ void AIManager::reset() {
     mutate(newPlayers, speciesMap, withoutCrossover);
     crossover(newPlayers, speciesMap, withCrossover);
 
-
-    // std::cout<<newPlayers.size()<<std::endl;
     players.clear();
     players = std::move(newPlayers);
 }

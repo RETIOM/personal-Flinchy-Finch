@@ -109,7 +109,7 @@ private:
     // Computing a Network
     void inferNetwork();
     void resetNetwork();
-    void setInputs(const std::vector<double> &input);
+    void setInputs(const std::vector<double> &input) const;
 
 };
 

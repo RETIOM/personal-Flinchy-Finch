@@ -33,7 +33,7 @@ font("./assets/PressStart2P-Regular.ttf"), scoreText(font) {
             deltaSpeed = []() {return 0.f;};
             break;
         case Difficulty::HARD:
-            deltaSpeed = [this]() {return score*0.5f*_window.getSize().x/600.f;};
+            deltaSpeed = [this]() {return score*0.03f*(_window.getSize().y/400.f);};
             break;
     }
     switch (_mode) {
@@ -44,17 +44,17 @@ font("./assets/PressStart2P-Regular.ttf"), scoreText(font) {
             players = new AIManager(pipes, window, birdTexture, 150, font);
     }
 
-    velocity = _window.getSize().y / 6;
+    velocity = _window.getSize().x / 4;
 }
 
 void Game::update(float deltaTime) {
     if (players->getAlive()) {
         if (previousScore != score) velocity += deltaSpeed();
+        previousScore = score;
         updateScore();
         players->update(deltaTime);
         ground.update(deltaTime, velocity);
         pipes.update(deltaTime, velocity);
-        previousScore = score;
     }
     else if (_mode == Mode::AI) reset();
     else isDone = true;
@@ -70,6 +70,7 @@ void Game::draw() {
 
 void Game::reset() {
     score = 0;
+    velocity = _window.getSize().x / 4;
     isDone = false;
 
     ground.reset();
