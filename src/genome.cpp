@@ -131,7 +131,9 @@ double Genome::compareSimilarity(Genome &genome) {
     double weightDifference = 0.0;
 
 
-    const auto N = static_cast<int>(std::max(selfGenome.size(), otherGenome.size()));
+    auto N = static_cast<int>(std::max(selfGenome.size(), otherGenome.size()));
+
+    if (N < 20) N = 1;
 
     int i = 0, j = 0;
 
@@ -229,14 +231,42 @@ void Genome::mutateConnection() {
     }
 }
 
+void Genome::enableConnection() {
+    // Choose a random disabled connection and enable it
+    std::vector<Synapse*> disabledConnections;
+    for (auto& synapse : connectionGenes) {
+        if (!synapse.isEnabled) {disabledConnections.push_back(&synapse);}
+    }
+
+    if (disabledConnections.size() <= 0) {return;}
+
+    auto connectionToDisable = static_cast<int>(utils::getRandom(0,disabledConnections.size()));
+    disabledConnections[connectionToDisable]->enable();
+}
+
+void Genome::disableConnection() {
+    // Choose a random enabled connection and disable it
+    std::vector<Synapse*> enabledConnections;
+    for (auto& synapse : connectionGenes) {
+        if (synapse.isEnabled) {enabledConnections.push_back(&synapse);}
+    }
+
+    auto connectionToDisable = static_cast<int>(utils::getRandom(0,enabledConnections.size()));
+    enabledConnections[connectionToDisable]->disable();
+}
+
 void Genome::mutate() {
     constexpr double probMutWeight = 0.8;
     constexpr double probMutConn = 0.05;
     constexpr double probMutNode = 0.03;
+    constexpr double probDisConn = 0.2;
+    constexpr double probEnConn = 0.1;
 
     if (connectionGenes.size() > 0) {
         if (utils::getRandom(0,1) < probMutNode) mutateNode();
         if (utils::getRandom(0,1) < probMutWeight) mutateWeight();
+        // if (utils::getRandom(0,1) < probEnConn) enableConnection();
+        // if (utils::getRandom(0,1) < probDisConn) disableConnection();
     }
 
     if (utils::getRandom(0,1) < probMutConn) mutateConnection();

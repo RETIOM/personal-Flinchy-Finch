@@ -96,6 +96,8 @@ private:
     void mutateWeight();
     void perturbeWeight(); // Multiply between [0,2]
     void randomWeight(); // In the name
+    void enableConnection();
+    void disableConnection();
 
     // Computing a Network
     void inferNetwork();

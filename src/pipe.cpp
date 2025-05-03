@@ -23,11 +23,11 @@ Pipe::Pipe(sf::RenderWindow &window, sf::Texture &topTexture, sf::Texture &botto
 
 
 int Pipe::generatePipePosition() {
-    const int min = 50 * _window.getSize().y / 600u; // Scale with resolution
+    const int min = 30 * _window.getSize().y / 600u; // Scale with resolution
     const int max = _window.getSize().y - 112.f - pipeDistance - min;
     const auto mean = (min+max) / 2;
 
-    const int stddev = _window.getSize().y / 4;
+    const int stddev = _window.getSize().y / 8;
 
     static std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
     std::normal_distribution<double> dist(mean, stddev);

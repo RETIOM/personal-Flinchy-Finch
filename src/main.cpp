@@ -8,8 +8,8 @@
 
 int main()
 {
-    auto display_width = 400u;
-    auto display_height = 600u;
+    auto display_width = 480u;
+    auto display_height = 640u;
 
     auto window = sf::RenderWindow(sf::VideoMode({display_width, display_height}), "Flinchy Finch(TM)",
         sf::Style::Default, sf::State::Windowed);
@@ -25,12 +25,14 @@ int main()
     // + create abstract class AgentManager and put it above player&AIPlayer
     // + refactor Game object to work with AgentManager(store pointer to object)
     // + create class Agents and its components(neuron, synapse, network)/(Genome, genome translation or smth)
+    // - add a bias node(node 0, can be input to all but input nodes)
+    // - add network visualization :)
     // - add menu(main(Play(also space), difficulty, mode, exit), restart(play, main menu, score(last, best))
     // - add central CONFIG file for all options(screen size, speeds, GENETIC PARAMS)
 
 
     // Set manually
-    auto difficulty = Difficulty::HARD;
+    auto difficulty = Difficulty::EASY;
     auto mode = Mode::AI;
 
     Game game(difficulty, mode, window);

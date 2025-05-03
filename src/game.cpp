@@ -40,7 +40,7 @@ font("./assets/PressStart2P-Regular.ttf"), scoreText(font) {
             players = new AIManager(pipes, window, birdTexture, 150, font);
     }
 
-    velocity = _window.getSize().x / 4;
+    velocity = _window.getSize().x / 3;
 }
 
 void Game::update(float deltaTime) {
@@ -66,7 +66,7 @@ void Game::draw() {
 
 void Game::reset() {
     score = 0;
-    velocity = _window.getSize().x / 4;
+    velocity = _window.getSize().x / 2.5;
     isDone = false;
 
     ground.reset();
