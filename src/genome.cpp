@@ -238,8 +238,8 @@ void Genome::setupNewNode(int start, int end, double weight) {
 void Genome::mutateConnection() {
     auto sortedNodes = topSort();
 
-    const int startNodeId = std::round(utils::getRandom(0,sortedNodes.size()-ONodes-1));
-    const int endNodeId = std::round(utils::getRandom(std::max(INodes+1, startNodeId+1),sortedNodes.size()-1));
+    const int startNodeId = static_cast<int>(utils::getRandom(0,sortedNodes.size()-ONodes));
+    const int endNodeId = static_cast<int>(utils::getRandom(std::max(INodes+1, startNodeId+1),sortedNodes.size()));
 
     auto newPair = std::make_pair(sortedNodes[startNodeId], sortedNodes[endNodeId]);
     // Check if mutation already exists
@@ -268,7 +268,7 @@ void Genome::enableConnection() {
         if (!synapse.isEnabled) {disabledConnections.push_back(&synapse);}
     }
 
-    if (disabledConnections.size() < 1) {return;}
+    if (disabledConnections.empty()) {return;}
 
     auto connectionToDisable = static_cast<int>(utils::getRandom(0,disabledConnections.size()));
     disabledConnections[connectionToDisable]->enable();
@@ -281,7 +281,7 @@ void Genome::disableConnection() {
         if (synapse.isEnabled) {enabledConnections.push_back(&synapse);}
     }
 
-    if (enabledConnections.size() < 1) {return;}
+    if (enabledConnections.empty()) {return;}
 
     auto connectionToDisable = static_cast<int>(utils::getRandom(0,enabledConnections.size()));
     enabledConnections[connectionToDisable]->disable();
@@ -294,7 +294,7 @@ void Genome::mutate() {
     constexpr double probDisConn = 0.2;
     constexpr double probEnConn = 0.1;
 
-    if (connectionGenes.size() > 0) {
+    if (!connectionGenes.empty()) {
         if (utils::getRandom(0,1) < probMutNode) mutateNode();
         if (utils::getRandom(0,1) < probMutWeight) mutateWeight();
         if (utils::getRandom(0,1) < probEnConn) enableConnection();
