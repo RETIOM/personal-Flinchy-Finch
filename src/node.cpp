@@ -28,7 +28,7 @@ double Node::getOutput() {
 
     output = activationFunction(inputs.dot(weights.transpose()));
 
-    _type != NodeType::OUTPUT ? wasCalled = false : wasCalled = true;
+    wasCalled = true;
     return output;
 }
 
