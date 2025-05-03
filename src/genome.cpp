@@ -5,6 +5,8 @@
 #include <iostream>
 
 Genome::Genome(int inputNumber, int outputNumber) {
+    nodes[0] = std::make_shared<Node>(NodeType::BIAS, 0);
+
     for (int i = 1; i <= inputNumber; i++) {
         auto newInputNode = std::make_shared<Node>(NodeType::INPUT, i);
         inputNodes.push_back(newInputNode);
@@ -19,6 +21,9 @@ Genome::Genome(int inputNumber, int outputNumber) {
 }
 
 Genome::Genome(Genome &fitterParent, Genome &otherParent) {
+    // Insert bias Node
+    nodes[0] = std::make_shared<Node>(NodeType::BIAS, 0);
+
     // Handle IO nodes
     for (int i = 1; i <= INodes; i++) {
         auto newInputNode = std::make_shared<Node>(NodeType::INPUT, i);
@@ -184,19 +189,44 @@ void Genome::perturbeWeight() {
 }
 
 void Genome::mutateNode() {
-    const auto synapseId = static_cast<int>(utils::getRandom(0,connectionGenes.size()));
+    // Create a vector of viable connections
+    std::vector<Synapse*> viableConnections;
 
-    // Give up if connection is disabled
-    if (!connectionGenes[synapseId].isEnabled) {return;}
+    for (auto& synapse : connectionGenes) {
+        if (synapse.isEnabled && synapse._start != 0)
+            viableConnections.push_back(&synapse);
+    }
 
-    const auto start = connectionGenes[synapseId]._start;
-    const auto end = connectionGenes[synapseId]._end;
+    if (viableConnections.size() < 1) {return;}
 
-    const int newNodeNumber = getNodeNumber()+getIONodes();
+    const auto synapseId = static_cast<int>(utils::getRandom(0,viableConnections.size()));
+
+    const auto start = viableConnections[synapseId]->_start;
+    const auto end = viableConnections[synapseId]->_end;
+    const auto weight = viableConnections[synapseId]->_weight;
+    viableConnections[synapseId]->disable();
+
+    const int newNodeNumber = getNodeNumber() + getIONodes();
 
     setupNewNode(start, newNodeNumber, 1);
-    setupNewNode(newNodeNumber, end, connectionGenes[synapseId]._weight);
-    connectionGenes[synapseId].disable();
+    setupNewNode(newNodeNumber, end, weight);
+
+    // viableConnections[synapseId]->disable();
+
+
+    // const auto synapseId = static_cast<int>(utils::getRandom(0,connectionGenes.size()));
+    //
+    // // Give up if connection is disabled
+    // if (!connectionGenes[synapseId].isEnabled) {return;}
+    //
+    // const auto start = connectionGenes[synapseId]._start;
+    // const auto end = connectionGenes[synapseId]._end;
+    //
+    // const int newNodeNumber = getNodeNumber()+getIONodes();
+    //
+    // setupNewNode(start, newNodeNumber, 1);
+    // setupNewNode(newNodeNumber, end, connectionGenes[synapseId]._weight);
+    // connectionGenes[synapseId].disable();
 }
 
 void Genome::setupNewNode(int start, int end, double weight) {
@@ -209,7 +239,7 @@ void Genome::mutateConnection() {
     auto sortedNodes = topSort();
 
     const int startNodeId = std::round(utils::getRandom(0,sortedNodes.size()-ONodes-1));
-    const int endNodeId = std::round(utils::getRandom(std::max(INodes, startNodeId+1),sortedNodes.size()-1));
+    const int endNodeId = std::round(utils::getRandom(std::max(INodes+1, startNodeId+1),sortedNodes.size()-1));
 
     auto newPair = std::make_pair(sortedNodes[startNodeId], sortedNodes[endNodeId]);
     // Check if mutation already exists
@@ -238,7 +268,7 @@ void Genome::enableConnection() {
         if (!synapse.isEnabled) {disabledConnections.push_back(&synapse);}
     }
 
-    if (disabledConnections.size() <= 0) {return;}
+    if (disabledConnections.size() < 1) {return;}
 
     auto connectionToDisable = static_cast<int>(utils::getRandom(0,disabledConnections.size()));
     disabledConnections[connectionToDisable]->enable();
@@ -250,6 +280,8 @@ void Genome::disableConnection() {
     for (auto& synapse : connectionGenes) {
         if (synapse.isEnabled) {enabledConnections.push_back(&synapse);}
     }
+
+    if (enabledConnections.size() < 1) {return;}
 
     auto connectionToDisable = static_cast<int>(utils::getRandom(0,enabledConnections.size()));
     enabledConnections[connectionToDisable]->disable();
@@ -265,8 +297,8 @@ void Genome::mutate() {
     if (connectionGenes.size() > 0) {
         if (utils::getRandom(0,1) < probMutNode) mutateNode();
         if (utils::getRandom(0,1) < probMutWeight) mutateWeight();
-        // if (utils::getRandom(0,1) < probEnConn) enableConnection();
-        // if (utils::getRandom(0,1) < probDisConn) disableConnection();
+        if (utils::getRandom(0,1) < probEnConn) enableConnection();
+        if (utils::getRandom(0,1) < probDisConn) disableConnection();
     }
 
     if (utils::getRandom(0,1) < probMutConn) mutateConnection();
@@ -296,8 +328,8 @@ std::vector<int> Genome::topSort() {
         }
     }
 
-    // Make sure inputs are always included
-    for (int i = 1; i <= INodes; i++) {
+    // Make sure inputs and bias are always included
+    for (int i = INodes; i >= 0; i--) {
         helper.push_back(i);
     }
 

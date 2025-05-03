@@ -3,6 +3,7 @@
 
 enum class NodeType {
     INPUT,
+    BIAS,
     HIDDEN,
     OUTPUT
 };

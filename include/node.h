@@ -10,11 +10,11 @@
 
 class Node {
 public:
-    Node(const NodeType type, const int nodeNumber): _type(type), _nodeNumber(nodeNumber) { _type == NodeType::INPUT ? wasCalled = true : false; }
+    Node(const NodeType type, const int nodeNumber);
     ~Node() = default;
     double getOutput();
     void addPrevious(const std::shared_ptr<Node> &previous, double weight);
-    void reset() {_type != NodeType::INPUT ? wasCalled = false : wasCalled = true;}
+    void reset();
 
     void setOutput(double output);
 

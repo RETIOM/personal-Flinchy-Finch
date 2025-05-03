@@ -461,7 +461,7 @@ protected:
 
 TEST_F(CompareTests, CompareTests_CorrectComparison) {
     auto result = round(first.compareSimilarity(second)*1000);
-    ASSERT_EQ(result, 844);
+    ASSERT_EQ(result, 5288);
 }
 
 TEST_F(CompareTests, CompareTests_Commutativity) {

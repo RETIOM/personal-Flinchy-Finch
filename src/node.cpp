@@ -1,5 +1,22 @@
 #include "../include/node.h"
 
+Node::Node(const NodeType type, const int nodeNumber) :
+_type(type),
+_nodeNumber(nodeNumber) {
+    _type == NodeType::INPUT ? wasCalled = true : false;
+    switch (_type) {
+        case NodeType::INPUT:
+            wasCalled = true;
+            break;
+        case NodeType::BIAS:
+            wasCalled = true;
+            output = 1.0;
+            break;
+        default:
+            wasCalled = false;
+    }
+}
+
 
 void Node::addPrevious(const std::shared_ptr<Node> &previous, double weight) {
     _previous.push_back(previous);
@@ -13,7 +30,7 @@ double Node::getOutput() {
         return output;
     }
 
-    if (_type != NodeType::INPUT && _previous.size() < 1) {
+    if ((_type == NodeType::HIDDEN || _type == NodeType::OUTPUT) && _previous.size() < 1) {
         wasCalled = true;
         output = 0;
         return output;
@@ -37,5 +54,19 @@ void Node::setOutput(double input) {
           output = input;
 	}
 }
+
+void Node::reset() {
+    switch (_type) {
+        case NodeType::INPUT:
+            wasCalled = true;
+            break;
+        case NodeType::BIAS:
+            wasCalled = true;
+            break;
+        default:
+            wasCalled = false;
+    }
+}
+
 
 
