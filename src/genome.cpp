@@ -197,7 +197,7 @@ void Genome::mutateNode() {
             viableConnections.push_back(&synapse);
     }
 
-    if (viableConnections.size() < 1) {return;}
+    if (viableConnections.empty()) {return;}
 
     const auto synapseId = static_cast<int>(utils::getRandom(0,viableConnections.size()));
 
@@ -210,23 +210,6 @@ void Genome::mutateNode() {
 
     setupNewNode(start, newNodeNumber, 1);
     setupNewNode(newNodeNumber, end, weight);
-
-    // viableConnections[synapseId]->disable();
-
-
-    // const auto synapseId = static_cast<int>(utils::getRandom(0,connectionGenes.size()));
-    //
-    // // Give up if connection is disabled
-    // if (!connectionGenes[synapseId].isEnabled) {return;}
-    //
-    // const auto start = connectionGenes[synapseId]._start;
-    // const auto end = connectionGenes[synapseId]._end;
-    //
-    // const int newNodeNumber = getNodeNumber()+getIONodes();
-    //
-    // setupNewNode(start, newNodeNumber, 1);
-    // setupNewNode(newNodeNumber, end, connectionGenes[synapseId]._weight);
-    // connectionGenes[synapseId].disable();
 }
 
 void Genome::setupNewNode(int start, int end, double weight) {
